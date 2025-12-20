@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+html {
+    font-size: 20px;
+    scroll-behavior: smooth;
+}
+:root {
+    scroll-padding-top: 100px;
+  }
+  body {
+    background-color: #111827;
+    color: white;
+}

@@ -1,0 +1,15 @@
+# Skeleton App TODO
+
+## Development Tasks
+- [ ] Customize branding and content
+- [ ] Add specific components as needed
+- [ ] Configure environment variables
+- [ ] Set up deployment pipeline
+
+## Commands Reference
+```bash
+npm run dev    # Development server
+npm run build  # Production build
+npm run start  # Production server
+npm run lint   # Code linting
+```
