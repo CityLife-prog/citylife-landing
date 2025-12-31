@@ -40,16 +40,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { name, email, company, projects, totalSpent } = req.body;
+    const { name, email, company, phone, website, business_name, address, projects, totalSpent } = req.body;
 
-    if (!name || !email || !company) {
-      return res.status(400).json({ error: 'Name, email, and company are required' });
+    if (!name || !email) {
+      return res.status(400).json({ error: 'Name and email are required' });
     }
 
     const result = db.createClient({
       name,
       email,
       company,
+      phone: phone || null,
+      website: website || null,
+      business_name: business_name || null,
+      address: address || null,
       projects: projects || 0,
       totalSpent: totalSpent || 0
     });
