@@ -400,5 +400,32 @@ export const db = {
       `;
       return rows;
     }
+  },
+
+  createMessage: async (message: any) => {
+    const { rows } = await sql`
+      INSERT INTO messages (
+        sender_id, sender_name, sender_email,
+        recipient_id, recipient_name, recipient_email,
+        project_id, project_name, subject, message
+      )
+      VALUES (
+        ${message.senderId}, ${message.senderName}, ${message.senderEmail},
+        ${message.recipientId}, ${message.recipientName}, ${message.recipientEmail},
+        ${message.projectId || null}, ${message.projectName || null},
+        ${message.subject}, ${message.message}
+      )
+      RETURNING id
+    `;
+    return { lastInsertRowid: rows[0].id };
+  },
+
+  markMessageRead: async (messageId: number, userId: string) => {
+    const { rowCount } = await sql`
+      UPDATE messages
+      SET read = true
+      WHERE id = ${messageId} AND recipient_id = ${userId}
+    `;
+    return { changes: rowCount || 0 };
   }
 };
