@@ -39,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
       const reviews = await db.getReviews(false); // Get all reviews, including inactive
-      res.status(200).json(reviews);
+      res.status(200).json({ success: true, reviews });
     } catch (error) {
       console.error('Error fetching reviews:', error);
       res.status(500).json({ error: 'Internal server error' });

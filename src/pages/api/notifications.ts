@@ -49,9 +49,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const { id, markAllRead } = req.body;
 
       if (markAllRead) {
-        db.markAllNotificationsRead();
+        await db.markAllNotificationsRead();
       } else if (id) {
-        db.markNotificationRead(parseInt(id));
+        await db.markNotificationRead(parseInt(id));
       } else {
         return res.status(400).json({ error: 'Missing id or markAllRead parameter' });
       }
