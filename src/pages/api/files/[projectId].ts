@@ -25,18 +25,18 @@ function getUserFromRequest(req: NextApiRequest) {
 }
 
 // Authorization helper
-function canAccessProject(user: any, projectId: number) {
+async function canAccessProject(user: any, projectId: number) {
   if (!user) return false;
-  
+
   // Admin can access all projects
   if (user.role === 'admin') return true;
-  
+
   // Client can only access their own projects
   if (user.role === 'client') {
     const project = await db.getProject(projectId) as any;
     return project && project.client_id === user.id;
   }
-  
+
   return false;
 }
 
@@ -49,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
   
   const projectIdNum = parseInt(projectId as string);
-  if (!canAccessProject(user, projectIdNum)) {
+  if (!await canAccessProject(user, projectIdNum)) {
     return res.status(403).json({ error: 'Access denied' });
   }
 
