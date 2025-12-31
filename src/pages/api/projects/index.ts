@@ -40,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         projects = db.getProjects();
       } else if (user.role === 'client') {
         // Client can only see their own projects
-        const allProjects = db.getProjects();
+        const allProjects = await db.getProjects();
         projects = allProjects.filter((project: any) => project.client_id === user.id);
       } else {
         return res.status(403).json({ error: 'Access denied' });

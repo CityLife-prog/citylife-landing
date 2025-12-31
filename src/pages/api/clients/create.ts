@@ -46,7 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Name and email are required' });
     }
 
-    const result = db.createClient({
+    const result = await db.createClient({
       name,
       email,
       company,

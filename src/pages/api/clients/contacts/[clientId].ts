@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     // Get client contacts
     try {
-      const contacts = db.getClientContacts(parseInt(clientId as string));
+      const contacts = await db.getClientContacts(parseInt(clientId as string));
       res.status(200).json({
         success: true,
         contacts
@@ -57,7 +57,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Name and email are required' });
       }
 
-      const result = db.createClientContact({
+      const result = await db.createClientContact({
         clientId: parseInt(clientId as string),
         name,
         email,

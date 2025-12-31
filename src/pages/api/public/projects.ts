@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     // Get all projects for public display
-    const allProjects = db.getProjects();
+    const allProjects = await db.getProjects();
     
     // Filter and format for public consumption
     const publicProjects = allProjects.map((project: any) => ({

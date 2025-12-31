@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     // Get user profile
     try {
-      const userProfile = db.getUser(user.id);
+      const userProfile = await db.getUser(user.id);
       if (!userProfile) {
         return res.status(404).json({ error: 'User not found' });
       }
@@ -55,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         // Verify current password
-        const userWithPassword = db.getUserByEmail(user.email) as any;
+        const userWithPassword = await db.getUserByEmail(user.email) as any;
         const isValidPassword = await verifyPassword(currentPassword, userWithPassword.password);
 
         if (!isValidPassword) {
@@ -83,7 +83,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       // Get updated user profile
-      const updatedProfile = db.getUser(user.id);
+      const updatedProfile = await db.getUser(user.id);
 
       res.status(200).json({
         success: true,

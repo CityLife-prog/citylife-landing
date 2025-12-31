@@ -39,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Get user from database
-    const user = db.getUserByEmail(email) as any;
+    const user = await db.getUserByEmail(email) as any;
 
     if (!user) {
       // For security, don't reveal if email exists or not
@@ -54,7 +54,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const expiresAt = new Date(Date.now() + 3600000).toISOString(); // 1 hour from now
 
     // Save token to database
-    db.createPasswordResetToken(user.id, resetToken, expiresAt);
+    await db.createPasswordResetToken(user.id, resetToken, expiresAt);
 
     // Send email if nodemailer is available
     if (!nodemailer || !process.env.SMTP_PASSWORD) {

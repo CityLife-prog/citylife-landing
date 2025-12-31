@@ -56,7 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     // Delete from database
-    const result = db.deleteFile(fileIdNum);
+    const result = await db.deleteFile(fileIdNum);
 
     if (result.changes === 0) {
       return res.status(404).json({ error: 'File not found' });

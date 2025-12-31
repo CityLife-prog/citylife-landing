@@ -38,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     try {
       const { unreadOnly } = req.query;
-      const notifications = db.getNotifications(unreadOnly === 'true');
+      const notifications = await db.getNotifications(unreadOnly === 'true');
       res.status(200).json({ success: true, notifications });
     } catch (error) {
       console.error('Error fetching notifications:', error);
@@ -69,7 +69,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Missing id parameter' });
       }
 
-      db.deleteNotification(parseInt(id));
+      await db.deleteNotification(parseInt(id));
       res.status(200).json({ success: true, message: 'Notification deleted' });
     } catch (error) {
       console.error('Error deleting notification:', error);

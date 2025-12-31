@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     // Get only active reviews for public display
-    const reviews = db.getReviews(true);
+    const reviews = await db.getReviews(true);
 
     res.status(200).json(reviews);
   } catch (error) {

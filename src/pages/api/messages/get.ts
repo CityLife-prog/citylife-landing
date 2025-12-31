@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Get messages from database
-    const userMessages = db.getMessages(userId as string, projectId as string);
+    const userMessages = await db.getMessages(userId as string, projectId as string);
 
     // Group messages by conversation (project + participants)
     const conversations = userMessages.reduce((acc: any, msg: any) => {

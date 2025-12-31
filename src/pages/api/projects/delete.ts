@@ -46,7 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Project ID is required' });
     }
 
-    const result = db.deleteProject(parseInt(id));
+    const result = await db.deleteProject(parseInt(id));
 
     if (result.changes === 0) {
       return res.status(404).json({ error: 'Project not found' });

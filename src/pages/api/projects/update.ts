@@ -55,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'No valid updates provided' });
     }
 
-    const result = db.updateProject(parseInt(id), cleanUpdates);
+    const result = await db.updateProject(parseInt(id), cleanUpdates);
 
     if (result.changes === 0) {
       return res.status(404).json({ error: 'Project not found' });

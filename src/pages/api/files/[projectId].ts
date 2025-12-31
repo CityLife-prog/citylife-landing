@@ -33,7 +33,7 @@ function canAccessProject(user: any, projectId: number) {
   
   // Client can only access their own projects
   if (user.role === 'client') {
-    const project = db.getProject(projectId) as any;
+    const project = await db.getProject(projectId) as any;
     return project && project.client_id === user.id;
   }
   
@@ -55,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'GET') {
     try {
-      const files = db.getProjectFiles(projectIdNum);
+      const files = await db.getProjectFiles(projectIdNum);
       res.status(200).json({ success: true, files });
     } catch (error) {
       console.error('Error fetching files:', error);

@@ -47,12 +47,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Check if review exists
-    const existingReview = db.getReview(id);
+    const existingReview = await db.getReview(id);
     if (!existingReview) {
       return res.status(404).json({ error: 'Review not found' });
     }
 
-    db.deleteReview(id);
+    await db.deleteReview(id);
 
     res.status(200).json({
       success: true,

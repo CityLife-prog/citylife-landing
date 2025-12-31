@@ -58,7 +58,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Create new message in database
-    const result = db.createMessage({
+    const result = await db.createMessage({
       senderId,
       senderName,
       senderEmail,

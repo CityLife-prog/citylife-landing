@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Mark message as read in database
-    const result = db.markMessageRead(parseInt(messageId), userId);
+    const result = await db.markMessageRead(parseInt(messageId), userId);
 
     if (result.changes === 0) {
       return res.status(404).json({ error: 'Message not found or not authorized' });

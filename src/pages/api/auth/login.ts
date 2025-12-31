@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Get user from database
-    const user = db.getUserByEmail(email) as any;
+    const user = await db.getUserByEmail(email) as any;
 
     if (!user) {
       return res.status(401).json({ error: 'Invalid email or password' });

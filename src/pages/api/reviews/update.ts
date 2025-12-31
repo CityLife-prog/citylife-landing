@@ -47,7 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Check if review exists
-    const existingReview = db.getReview(id);
+    const existingReview = await db.getReview(id);
     if (!existingReview) {
       return res.status(404).json({ error: 'Review not found' });
     }
@@ -57,7 +57,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Rating must be between 1 and 5' });
     }
 
-    db.updateReview(id, updates);
+    await db.updateReview(id, updates);
 
     res.status(200).json({
       success: true,

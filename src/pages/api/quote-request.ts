@@ -22,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Check if client already exists
-    const existingClients = db.getClients();
+    const existingClients = await db.getClients();
     const existingClient = (existingClients as any[]).find((c: any) => c.email === email);
 
     let clientId;
@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       clientId = existingClient.id;
     } else {
       // Create new client
-      const result = db.createClient({
+      const result = await db.createClient({
         name,
         email,
         company: company || null,
@@ -49,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Create project for quote request
     const projectName = `Quote Request: ${company || name}`;
-    const projectResult = db.createProject({
+    const projectResult = await db.createProject({
       name: projectName,
       client: company || name,
       clientId: clientId,
@@ -62,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const projectId = projectResult.lastInsertRowid;
 
     // Create notification for admin
-    db.createNotification({
+    await db.createNotification({
       type: 'quote_request',
       title: 'New Quote Request',
       message: `${name} (${email}) has requested a quote${company ? ` for ${company}` : ''}. Message: "${message.substring(0, 100)}${message.length > 100 ? '...' : ''}"`,

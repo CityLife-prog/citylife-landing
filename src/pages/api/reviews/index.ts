@@ -38,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
-      const reviews = db.getReviews(false); // Get all reviews, including inactive
+      const reviews = await db.getReviews(false); // Get all reviews, including inactive
       res.status(200).json(reviews);
     } catch (error) {
       console.error('Error fetching reviews:', error);
@@ -79,7 +79,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Rating must be between 1 and 5' });
       }
 
-      const result = db.createReview({
+      const result = await db.createReview({
         clientName: client_name,
         clientTitle: client_title,
         clientCompany: client_company,

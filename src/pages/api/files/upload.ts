@@ -42,7 +42,7 @@ function canUploadToProject(user: any, projectId: number) {
   
   // Client can only upload to their own projects
   if (user.role === 'client') {
-    const project = db.getProject(projectId) as any;
+    const project = await db.getProject(projectId) as any;
     return project && project.client_id === user.id;
   }
   
@@ -106,7 +106,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       size: file.size || 0
     };
 
-    const result = db.createFile(fileData);
+    const result = await db.createFile(fileData);
 
     res.status(200).json({
       success: true,

@@ -50,7 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Client selection is required' });
     }
 
-    const result = db.createProject({
+    const result = await db.createProject({
       name,
       client: client || 'Unknown Client',
       clientId: client_id || 'admin-1', // Use provided client_id or default to admin

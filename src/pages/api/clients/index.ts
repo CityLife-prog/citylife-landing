@@ -38,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     
     try {
-      const clients = db.getClients();
+      const clients = await db.getClients();
       res.status(200).json({ success: true, clients });
     } catch (error) {
       console.error('Error fetching clients:', error);

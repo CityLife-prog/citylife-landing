@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Get reset token from database
-    const resetToken = db.getPasswordResetToken(token) as any;
+    const resetToken = await db.getPasswordResetToken(token) as any;
 
     if (!resetToken) {
       return res.status(400).json({ error: 'Invalid or expired reset token' });
@@ -29,10 +29,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await db.updateUserPassword(resetToken.user_id, password);
 
     // Mark token as used
-    db.markPasswordResetTokenUsed(token);
+    await db.markPasswordResetTokenUsed(token);
 
     // Clean up expired tokens
-    db.deleteExpiredPasswordResetTokens();
+    await db.deleteExpiredPasswordResetTokens();
 
     res.status(200).json({
       success: true,
