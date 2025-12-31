@@ -42,10 +42,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# database files
-/data/*.db
-/data/*.db-shm
-/data/*.db-wal
+# database files (SQLite - not used with Vercel Postgres)
+/data/
+lib/database-sqlite.ts
 
 # project management
 TODO
