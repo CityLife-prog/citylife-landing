@@ -113,6 +113,17 @@ export default function Login() {
               </div>
             </div>
 
+            {/* Forgot Password Link */}
+            <div className="text-right">
+              <button
+                type="button"
+                onClick={() => router.push('/forgot-password')}
+                className="text-sm text-blue-600 hover:text-blue-800"
+              >
+                Forgot your password?
+              </button>
+            </div>
+
             {/* Submit Button */}
             <button
               type="submit"
@@ -122,15 +133,6 @@ export default function Login() {
               {isLoading ? 'Signing In...' : 'Sign In'}
             </button>
           </form>
-
-          {/* Demo Credentials */}
-          <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-sm font-semibold text-gray-700 mb-2">Demo Credentials:</h3>
-            <div className="text-xs space-y-1 text-gray-600">
-              <div><strong>Admin:</strong> citylife32@outlook.com / admin123</div>
-              <div><strong>Client:</strong> client@demo.com / client123</div>
-            </div>
-          </div>
 
           {/* Back to Home */}
           <div className="mt-6 text-center">

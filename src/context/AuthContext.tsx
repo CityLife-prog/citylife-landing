@@ -36,36 +36,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
-    
+
     try {
-      // Admin login (hardcoded for now - in production, this would be API-based)
-      if (email === 'citylife32@outlook.com' && password === 'admin123') {
-        const adminUser: User = {
-          id: 'admin-1',
-          email: 'citylife32@outlook.com',
-          name: 'Matthew Kenner',
-          role: 'admin'
+      // Call authentication API
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        setIsLoading(false);
+        return false;
+      }
+
+      const data = await response.json();
+
+      if (data.success && data.user) {
+        const authenticatedUser: User = {
+          id: data.user.id,
+          email: data.user.email,
+          name: data.user.name,
+          role: data.user.role
         };
-        setUser(adminUser);
-        localStorage.setItem('citylife_user', JSON.stringify(adminUser));
+
+        setUser(authenticatedUser);
+        localStorage.setItem('citylife_user', JSON.stringify(authenticatedUser));
         setIsLoading(false);
         return true;
       }
-      
-      // Demo client login
-      if (email === 'client@demo.com' && password === 'client123') {
-        const clientUser: User = {
-          id: 'client-1',
-          email: 'client@demo.com',
-          name: 'Demo Client',
-          role: 'client'
-        };
-        setUser(clientUser);
-        localStorage.setItem('citylife_user', JSON.stringify(clientUser));
-        setIsLoading(false);
-        return true;
-      }
-      
+
       setIsLoading(false);
       return false;
     } catch (error) {
