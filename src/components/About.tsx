@@ -96,8 +96,8 @@ export default function About() {
             About CityLyfe LLC
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            We're a veteran-owned, Colorado-based IT company dedicated to empowering businesses 
-            with innovative technology solutions that drive growth and efficiency.
+            Veteran-owned cybersecurity and software engineering firm specializing in secure distributed systems,
+            AI-powered solutions, and enterprise-grade applications built with military precision.
           </p>
           
           {/* Veteran Owned Badge */}
@@ -118,22 +118,22 @@ export default function About() {
             </h3>
             <div className="space-y-6 text-gray-600 leading-relaxed">
               <p>
-                Founded in 2025, CityLyfe LLC is a veteran-owned business that started with a simple mission: 
-                help growing businesses leverage technology to streamline operations and increase efficiency. 
-                Based in Colorado, I focus on creating custom solutions that make a real difference 
-                for small and medium-sized businesses.
+                Founded in 2025, CityLyfe LLC is a veteran-owned business specializing in cybersecurity-focused
+                software engineering, distributed systems, and AI-powered solutions. Based in Denver, Colorado,
+                we combine military-grade security practices with modern development expertise to deliver
+                enterprise-quality solutions for businesses of all sizes.
               </p>
               <p>
-                As a solo developer, I bring a personal touch to every project. I take the time 
-                to understand your unique challenges and build solutions that fit your specific needs 
-                and budget. Whether you need a professional website, mobile app, or business automation, 
-                I'm committed to delivering quality work that exceeds expectations.
+                With a foundation in secure Linux infrastructure, containerized applications, and cloud-adjacent
+                deployments, we bring the same operational discipline from military communications systems to
+                commercial software engineering. Whether you need a hardened web application, automated workflows,
+                or AI-integrated systems, we deliver solutions built with security and scalability at the core.
               </p>
               <p>
-                With 100% client satisfaction on my completed projects, I pride myself on clear 
-                communication, reliable delivery, and ongoing support. When you work with CityLyfe LLC, 
-                you're not just hiring a developer – you're gaining a technology partner who cares 
-                about your success.
+                Our expertise spans full-stack development, cybersecurity, distributed systems design, and
+                applied AI/ML systems. With hands-on NVIDIA Deep Learning Institute training and real-world
+                deployment experience, we stay ahead of technology trends to provide you with competitive advantages
+                in an increasingly digital landscape.
               </p>
             </div>
 
@@ -172,11 +172,12 @@ export default function About() {
             {/* Mission Statement */}
             <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white">
               <h4 className="text-2xl font-bold mb-4">
-                My Mission
+                Our Mission
               </h4>
               <p className="text-lg opacity-90 leading-relaxed">
-                To help businesses leverage technology effectively with personalized service, 
-                honest communication, and solutions that truly make a difference in their daily operations.
+                To deliver military-grade security and reliability to commercial software systems while
+                making cutting-edge AI and distributed systems technology accessible to businesses of all sizes
+                through personalized service and transparent communication.
               </p>
             </div>
           </div>
@@ -185,7 +186,7 @@ export default function About() {
         {/* Values Section */}
         <div className="mb-16">
           <h3 className="text-3xl font-bold text-gray-900 text-center mb-12">
-            What Drives Me
+            What Drives Us
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => (
@@ -237,32 +238,59 @@ export default function About() {
               
               <div className="text-left space-y-4 text-gray-600">
                 <p>
-                  Hi, I'm Matthew Kenner, the founder of CityLyfe LLC. As a military veteran, I started this company 
-                  with a simple goal: to help businesses succeed through better technology solutions while bringing 
-                  the same dedication, discipline, and attention to detail I learned during my service.
+                  Hi, I'm Matthew Kenner, founder of CityLyfe LLC. As a U.S. Army veteran and cybersecurity-focused
+                  software engineer, I bring over a decade of experience in secure communications, network systems,
+                  and mission-critical infrastructure to commercial software development. I served as a Network
+                  Communication Systems Specialist (25H), where I led training for 100+ soldiers and deployed tactical
+                  communication systems across multiple countries.
                 </p>
                 <p>
-                  As a full-stack developer, I specialize in creating custom websites, mobile applications, 
-                  and automation tools that make real differences in how businesses operate. 
-                  I believe in honest communication, transparent pricing, and delivering exactly what I promise.
+                  Currently pursuing my B.S. in Computer Science at the University of Colorado Denver (graduating May 2026)
+                  with minors in Data Science and Risk Management & Insurance, I combine academic rigor with real-world
+                  deployment experience. I've completed advanced NVIDIA Deep Learning Institute certifications in
+                  Transformer-Based NLP, Generative AI, RAG Agents, and Agentic AI Applications, staying at the
+                  cutting edge of AI/ML technologies.
                 </p>
                 <p>
-                  When you work with CityLyfe LLC, you're working directly with me. I personally handle 
-                  every aspect of your project from initial consultation to final delivery and ongoing support. 
-                  This personal approach ensures quality and accountability that larger agencies simply can't match.
+                  My technical foundation spans secure software engineering, distributed systems design, containerized
+                  application delivery, and applied AI systems. Whether building production web applications with
+                  Node.js and Docker, implementing secure Linux environments, or developing automation workflows,
+                  I bring the same operational excellence and attention to detail from military service to every project.
+                </p>
+                <p>
+                  When you work with CityLyfe LLC, you get direct access to an engineer who understands both the
+                  technical requirements and security implications of modern software systems. I personally handle
+                  every aspect of your project, ensuring quality, security, and reliability that comes from military-grade
+                  standards applied to commercial solutions.
                 </p>
               </div>
 
               {/* Skills */}
               <div className="mt-8">
-                <h5 className="font-semibold text-gray-900 mb-4">Core Expertise:</h5>
+                <h5 className="font-semibold text-gray-900 mb-4">Technical Expertise:</h5>
                 <div className="flex flex-wrap justify-center gap-3">
-                  <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">React & Next.js</span>
-                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Node.js</span>
-                  <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">TypeScript</span>
-                  <span className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">Mobile Development</span>
-                  <span className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Cloud Platforms</span>
-                  <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm">Business Automation</span>
+                  <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Python</span>
+                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">JavaScript/TypeScript</span>
+                  <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">React & Next.js</span>
+                  <span className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm">Node.js & Express</span>
+                  <span className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">Docker</span>
+                  <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm">Linux & Bash</span>
+                  <span className="bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full text-sm">PostgreSQL</span>
+                  <span className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm">PyTorch & CUDA</span>
+                  <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">Django & FastAPI</span>
+                  <span className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm">AI/ML Systems</span>
+                  <span className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Cybersecurity</span>
+                  <span className="bg-rose-100 text-rose-800 px-3 py-1 rounded-full text-sm">Distributed Systems</span>
+                </div>
+              </div>
+
+              {/* Education & Certifications */}
+              <div className="mt-8">
+                <h5 className="font-semibold text-gray-900 mb-4">Education & Certifications:</h5>
+                <div className="space-y-2 text-sm text-gray-600">
+                  <p><strong>B.S. Computer Science</strong> - University of Colorado Denver (May 2026)</p>
+                  <p><strong>NVIDIA DLI Certifications</strong> - Transformer NLP, Generative AI, RAG Agents, Agentic AI</p>
+                  <p><strong>CPCU Designation</strong> | <strong>Secret Clearance</strong> | <strong>Air Assault</strong></p>
                 </div>
               </div>
             </div>
@@ -271,7 +299,7 @@ export default function About() {
           {/* CTA */}
           <div className="text-center mt-12">
             <p className="text-gray-600 mb-6">
-              Ready to discuss your project? Let's connect and see how I can help your business grow.
+              Ready to discuss your project? Let's connect and see how we can help your business grow.
             </p>
             <button 
               onClick={scrollToContact}

@@ -8,13 +8,17 @@ export default function Testimonials() {
     satisfactionRate: 100
   });
   const [loading, setLoading] = useState(true);
+  const [testimonials, setTestimonials] = useState<any[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
 
+  // Fetch stats
   useEffect(() => {
     const fetchStats = async () => {
       try {
         const response = await fetch('/api/public/projects');
         const data = await response.json();
-        
+
         if (data.success) {
           setStats({
             completedProjects: data.stats.completedProjects,
@@ -31,26 +35,45 @@ export default function Testimonials() {
 
     fetchStats();
   }, []);
-  const testimonials = [
-    {
-      name: "VSR Team",
-      title: "Business Owner",
-      company: "VSR Snow Removal",
-      image: "/api/placeholder/80/80",
-      rating: 5,
-      text: "Matthew delivered exactly what we needed for our construction business. The website looks professional, works perfectly on mobile, and has already helped us connect with new customers. Great communication and fair pricing.",
-      project: "Construction Company Website"
-    },
-    {
-      name: "Matthew K.",
-      title: "Founder",
-      company: "CityLyfe LLC",
-      image: "/api/placeholder/80/80",
-      rating: 5,
-      text: "Building my own business website was a great way to showcase my skills and attention to detail. The modern design and clear service presentation demonstrate exactly what I can deliver for my clients.",
-      project: "Business Portfolio Website"
-    }
-  ];
+
+  // Fetch reviews from database
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch('/api/public/reviews');
+        const data = await response.json();
+
+        if (Array.isArray(data) && data.length > 0) {
+          setTestimonials(data.map((review: any) => ({
+            name: review.client_name,
+            title: review.client_title,
+            company: review.client_company,
+            image: review.image_url || '/api/placeholder/80/80',
+            rating: review.rating,
+            text: review.review_text,
+            project: review.project_name || 'Client Project'
+          })));
+        }
+      } catch (error) {
+        console.error('Error fetching reviews:', error);
+      } finally {
+        setReviewsLoading(false);
+      }
+    };
+
+    fetchReviews();
+  }, []);
+
+  // Auto-rotate reviews every 10 seconds if there are more than 3
+  useEffect(() => {
+    if (testimonials.length <= 3) return;
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 2) % testimonials.length);
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [testimonials.length]);
 
   const scrollToContact = () => {
     const el = document.getElementById('contact');
@@ -77,56 +100,111 @@ export default function Testimonials() {
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            What My Clients Say
+            What Our Clients Say
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Don't just take my word for it. Here's what business owners have to say 
+            Don't just take our word for it. Here's what business owners have to say
             about their experience working with CityLyfe LLC.
           </p>
         </div>
 
         {/* Testimonials Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 max-w-4xl mx-auto">
-          {testimonials.map((testimonial, index) => (
-            <div key={index} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 border border-gray-100 relative">
-              {/* Quote Icon */}
-              <div className="absolute top-6 right-6 text-blue-100">
-                <FaQuoteLeft size={24} />
-              </div>
-              
-              {/* Stars */}
-              <div className="flex mb-6">
-                {renderStars(testimonial.rating)}
-              </div>
-              
-              {/* Testimonial Text */}
-              <p className="text-gray-600 text-lg leading-relaxed mb-6 italic">
-                "{testimonial.text}"
-              </p>
-              
-              {/* Project */}
-              <div className="mb-6">
-                <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                  {testimonial.project}
-                </span>
-              </div>
-              
-              {/* Author */}
-              <div className="flex items-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-white text-xl font-bold">
-                    {testimonial.name.charAt(0)}
-                  </span>
+        {reviewsLoading ? (
+          <div className="flex justify-center items-center mb-16 min-h-[300px]">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
+        ) : testimonials.length === 0 ? (
+          <div className="text-center mb-16 py-12 bg-gray-50 rounded-xl">
+            <p className="text-gray-600">No reviews available yet.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 max-w-4xl mx-auto">
+            {/* Display 2 testimonials at a time, rotating if more than 3 */}
+            {testimonials.length <= 3 ? (
+              // Show all if 3 or fewer
+              testimonials.map((testimonial, index) => (
+                <div key={index} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 border border-gray-100 relative">
+                  {/* Quote Icon */}
+                  <div className="absolute top-6 right-6 text-blue-100">
+                    <FaQuoteLeft size={24} />
+                  </div>
+
+                  {/* Stars */}
+                  <div className="flex mb-6">
+                    {renderStars(testimonial.rating)}
+                  </div>
+
+                  {/* Testimonial Text */}
+                  <p className="text-gray-600 text-lg leading-relaxed mb-6 italic">
+                    "{testimonial.text}"
+                  </p>
+
+                  {/* Project */}
+                  <div className="mb-6">
+                    <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                      {testimonial.project}
+                    </span>
+                  </div>
+
+                  {/* Author */}
+                  <div className="flex items-center">
+                    <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center mr-4">
+                      <span className="text-white text-xl font-bold">
+                        {testimonial.name.charAt(0)}
+                      </span>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-900">{testimonial.name}</h4>
+                      <p className="text-sm text-gray-600">{testimonial.title}</p>
+                      <p className="text-sm text-blue-600 font-medium">{testimonial.company}</p>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-bold text-gray-900">{testimonial.name}</h4>
-                  <p className="text-sm text-gray-600">{testimonial.title}</p>
-                  <p className="text-sm text-blue-600 font-medium">{testimonial.company}</p>
+              ))
+            ) : (
+              // Show 2 rotating testimonials if more than 3
+              [testimonials[currentIndex], testimonials[(currentIndex + 1) % testimonials.length]].map((testimonial, index) => (
+                <div key={`${currentIndex}-${index}`} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 border border-gray-100 relative">
+                  {/* Quote Icon */}
+                  <div className="absolute top-6 right-6 text-blue-100">
+                    <FaQuoteLeft size={24} />
+                  </div>
+
+                  {/* Stars */}
+                  <div className="flex mb-6">
+                    {renderStars(testimonial.rating)}
+                  </div>
+
+                  {/* Testimonial Text */}
+                  <p className="text-gray-600 text-lg leading-relaxed mb-6 italic">
+                    "{testimonial.text}"
+                  </p>
+
+                  {/* Project */}
+                  <div className="mb-6">
+                    <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                      {testimonial.project}
+                    </span>
+                  </div>
+
+                  {/* Author */}
+                  <div className="flex items-center">
+                    <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center mr-4">
+                      <span className="text-white text-xl font-bold">
+                        {testimonial.name.charAt(0)}
+                      </span>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-900">{testimonial.name}</h4>
+                      <p className="text-sm text-gray-600">{testimonial.title}</p>
+                      <p className="text-sm text-blue-600 font-medium">{testimonial.company}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
+              ))
+            )}
+          </div>
+        )}
 
         {/* Trust Indicators */}
         <div className="bg-gray-50 rounded-2xl p-12 mb-16">
@@ -168,11 +246,11 @@ export default function Testimonials() {
         {/* CTA Section */}
         <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 rounded-2xl p-12 text-center text-white">
           <h3 className="text-3xl font-bold mb-4">
-            Ready to Be My Next Success Story?
+            Ready to Be Our Next Success Story?
           </h3>
           <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-            Join these satisfied clients who've experienced the personal touch and quality 
-            that comes with working directly with Matthew at CityLyfe LLC.
+            Join these satisfied clients who've experienced the personal touch and quality
+            that comes with working with CityLyfe LLC.
           </p>
           <div className="flex justify-center gap-4 flex-wrap">
             <button 

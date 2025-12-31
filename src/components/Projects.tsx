@@ -59,9 +59,9 @@ export default function Projects() {
         client: (
           <span>
             VSR Snow Removal (
-            <a 
-              href="https://vsrsnow.com" 
-              target="_blank" 
+            <a
+              href="https://vsrsnow.com"
+              target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 hover:text-blue-800 underline"
             >
@@ -72,7 +72,9 @@ export default function Projects() {
         ),
         category: "Web Development",
         icon: <FaDesktop className="text-blue-600" />,
-        image: "/api/placeholder/600/400",
+        image: "https://image.thum.io/get/width/1200/crop/800/https://vsrsnow.com",
+        imageAlt: "VSR Snow Removal website screenshot",
+        liveUrl: "https://vsrsnow.com",
         description: "Professional construction and snow removal company website with service pages, quote request forms, and mobile-responsive design. Features project galleries and contact integration.",
         technologies: ["Next.js", "Tailwind CSS", "Contact Forms", "SEO Optimization", "Responsive Design"],
         results: ["Professional online presence", "Mobile-friendly design", "Improved customer inquiries", "Clear service presentation"],
@@ -85,7 +87,9 @@ export default function Projects() {
         client: "CityLyfe LLC (This Website)",
         category: "Web Development",
         icon: <FaDesktop className="text-green-600" />,
-        image: "/api/placeholder/600/400",
+        image: "data:image/svg+xml,%3Csvg width='1200' height='800' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%232563eb;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%237c3aed;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='800' fill='url(%23grad)' /%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='48' fill='white' text-anchor='middle' dy='.3em'%3ECityLyfe Portfolio%3C/text%3E%3C/svg%3E",
+        imageAlt: "CityLyfe website preview",
+        liveUrl: null,
         description: "Professional business website showcasing IT services, project portfolio, and client testimonials. Features modern design, contact forms, and service pricing information.",
         technologies: ["Next.js", "Tailwind CSS", "TypeScript", "Contact Forms", "SEO Optimization"],
         results: ["Professional business presence", "Clear service presentation", "Improved client communication", "Portfolio showcase"],
@@ -99,7 +103,9 @@ export default function Projects() {
         client: project.client,
         category: "Web Development",
         icon: <FaDesktop className="text-purple-600" />,
-        image: "/api/placeholder/600/400",
+        image: `data:image/svg+xml,%3Csvg width='1200' height='800' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%236366f1;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23a855f7;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='800' fill='url(%23grad)' /%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='48' fill='white' text-anchor='middle' dy='.3em'%3E${encodeURIComponent(project.client)}%3C/text%3E%3C/svg%3E`,
+        imageAlt: `${project.name} website preview`,
+        liveUrl: null,
         description: `Custom web development project for ${project.client}. Professional website solution built with modern technologies and best practices.`,
         technologies: ["Next.js", "Tailwind CSS", "TypeScript", "Responsive Design"],
         results: ["Professional online presence", "Modern design", "Improved user experience", "Mobile optimization"],
@@ -128,7 +134,7 @@ export default function Projects() {
             Recent Projects
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            Here are the websites I've completed for satisfied clients. Each project 
+            Here are the websites we've completed for satisfied clients. Each project
             was built with attention to detail and a focus on delivering real value.
           </p>
           
@@ -169,11 +175,35 @@ export default function Projects() {
           ) : (
             displayProjects.map((project, index) => (
             <div key={index} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
-              {/* Project Image Placeholder */}
-              <div className="h-48 bg-gradient-to-r from-gray-200 to-gray-300 flex items-center justify-center">
-                <div className="text-6xl text-gray-400">{project.icon}</div>
+              {/* Project Image */}
+              <div className="relative h-64 bg-gradient-to-r from-gray-100 to-gray-200 overflow-hidden group">
+                <img
+                  src={project.image}
+                  alt={project.imageAlt}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  onError={(e) => {
+                    // Fallback if image fails to load
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.parentElement?.classList.add('flex', 'items-center', 'justify-center');
+                    const fallback = document.createElement('div');
+                    fallback.className = 'text-6xl text-gray-400';
+                    fallback.innerHTML = project.icon.props.children;
+                    e.currentTarget.parentElement?.appendChild(fallback);
+                  }}
+                />
+                {project.liveUrl && (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg hover:bg-white transition-all flex items-center gap-2 opacity-0 group-hover:opacity-100"
+                  >
+                    <FaExternalLinkAlt className="text-blue-600" />
+                    <span className="text-sm font-medium text-gray-900">Visit Site</span>
+                  </a>
+                )}
               </div>
-              
+
               <div className="p-8">
                 {/* Category & Timeline */}
                 <div className="flex justify-between items-center mb-4">
@@ -240,22 +270,16 @@ export default function Projects() {
         {/* CTA Section */}
         <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-12 text-center text-white">
           <h3 className="text-3xl font-bold mb-4">
-            Ready to Be My Next Success Story?
+            Ready to Be Our Next Success Story?
           </h3>
           <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-            Every project starts with understanding your unique needs. 
-            Let's discuss how I can help bring your vision to life with a custom solution.
+            Every project starts with understanding your unique needs.
+            Let's discuss how we can help bring your vision to life with a custom solution.
           </p>
-          <div className="flex justify-center gap-4 flex-wrap">
-            <button 
+          <div className="flex justify-center">
+            <button
               onClick={scrollToContact}
               className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-4 rounded-lg font-semibold hover:from-orange-600 hover:to-red-600 transition-all transform hover:scale-105"
-            >
-              Start Your Project Today
-            </button>
-            <button 
-              onClick={scrollToContact}
-              className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-gray-900 transition-colors"
             >
               Schedule Free Consultation
             </button>

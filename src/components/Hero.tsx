@@ -41,7 +41,7 @@ export default function Hero() {
         </h1>
         
         <p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto leading-relaxed">
-          I'm Matthew Kenner, and I create custom websites, mobile apps, and automation solutions 
+          We are CityLyfe, and we create custom websites, mobile apps, local smart home integration, and automation solutions
           that help small businesses grow and succeed.
         </p>
         
@@ -52,11 +52,11 @@ export default function Hero() {
           >
             Start Your Project
           </button>
-          <button 
+          <button
             onClick={scrollToServices}
             className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-all transform hover:scale-105"
           >
-            View My Services
+            View Our Services
           </button>
         </div>
         
@@ -65,7 +65,7 @@ export default function Hero() {
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
             <div className="text-3xl mb-3">👤</div>
             <h3 className="font-semibold text-lg mb-2">Personal Service</h3>
-            <p className="text-blue-100 text-sm">Work directly with me on every project</p>
+            <p className="text-blue-100 text-sm">Work directly with our team on every project</p>
           </div>
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
             <div className="text-3xl mb-3">💯</div>
