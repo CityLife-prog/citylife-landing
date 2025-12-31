@@ -99,6 +99,35 @@ CREATE TABLE IF NOT EXISTS notifications (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Files table
+CREATE TABLE IF NOT EXISTS files (
+  id SERIAL PRIMARY KEY,
+  project_id INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  type TEXT NOT NULL,
+  url TEXT NOT NULL,
+  size INTEGER DEFAULT 0,
+  uploaded_by TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Messages table
+CREATE TABLE IF NOT EXISTS messages (
+  id SERIAL PRIMARY KEY,
+  sender_id TEXT NOT NULL,
+  sender_name TEXT NOT NULL,
+  sender_email TEXT NOT NULL,
+  recipient_id TEXT NOT NULL,
+  recipient_name TEXT NOT NULL,
+  recipient_email TEXT NOT NULL,
+  project_id INTEGER,
+  project_name TEXT,
+  subject TEXT NOT NULL,
+  message TEXT NOT NULL,
+  read BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_token ON password_reset_tokens(token);
@@ -109,6 +138,11 @@ CREATE INDEX IF NOT EXISTS idx_reviews_project_id ON reviews(project_id);
 CREATE INDEX IF NOT EXISTS idx_reviews_is_active ON reviews(is_active);
 CREATE INDEX IF NOT EXISTS idx_reviews_featured ON reviews(featured);
 CREATE INDEX IF NOT EXISTS idx_notifications_read ON notifications(read);
+CREATE INDEX IF NOT EXISTS idx_files_project_id ON files(project_id);
+CREATE INDEX IF NOT EXISTS idx_messages_sender_id ON messages(sender_id);
+CREATE INDEX IF NOT EXISTS idx_messages_recipient_id ON messages(recipient_id);
+CREATE INDEX IF NOT EXISTS idx_messages_project_id ON messages(project_id);
+CREATE INDEX IF NOT EXISTS idx_messages_read ON messages(read);
 
 -- Insert default admin user (password will be hashed by application)
 -- Default password: ChangeMe123!

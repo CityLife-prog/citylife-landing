@@ -360,5 +360,45 @@ export const db = {
     const hashedPassword = await hashPassword(newPassword);
     await sql`UPDATE users SET password = ${hashedPassword}, updated_at = CURRENT_TIMESTAMP WHERE id = ${userId}`;
     return { changes: 1 };
+  },
+
+  // Files
+  getProjectFiles: async (projectId: number) => {
+    const { rows } = await sql`SELECT * FROM files WHERE project_id = ${projectId} ORDER BY created_at DESC`;
+    return rows;
+  },
+
+  createFile: async (file: any) => {
+    const { rows } = await sql`
+      INSERT INTO files (project_id, name, type, url, size, uploaded_by)
+      VALUES (${file.projectId}, ${file.name}, ${file.type}, ${file.url}, ${file.size || 0}, ${file.uploadedBy || null})
+      RETURNING id
+    `;
+    return { lastInsertRowid: rows[0].id };
+  },
+
+  deleteFile: async (id: number) => {
+    await sql`DELETE FROM files WHERE id = ${id}`;
+    return { changes: 1 };
+  },
+
+  // Messages
+  getMessages: async (userId: string, projectId?: string) => {
+    if (projectId) {
+      const { rows } = await sql`
+        SELECT * FROM messages
+        WHERE (sender_id = ${userId} OR recipient_id = ${userId})
+          AND project_id = ${parseInt(projectId)}
+        ORDER BY created_at DESC
+      `;
+      return rows;
+    } else {
+      const { rows } = await sql`
+        SELECT * FROM messages
+        WHERE sender_id = ${userId} OR recipient_id = ${userId}
+        ORDER BY created_at DESC
+      `;
+      return rows;
+    }
   }
 };
