@@ -1100,7 +1100,12 @@ export default function AdminDashboard() {
                             {review.is_active ? 'Active' : 'Inactive'}
                           </span>
                         </div>
-                        <p className="text-sm text-gray-600">{review.client_title} at {review.client_company}</p>
+                        <p className="text-sm text-gray-600">
+                          {review.client_company
+                            ? `${review.client_title} at ${review.client_company}`
+                            : review.client_title
+                          }
+                        </p>
                         {review.project_name && (
                           <p className="text-sm text-blue-600 mt-1">Project: {review.project_name}</p>
                         )}
@@ -2041,13 +2046,13 @@ function ReviewEditForm({ review, onSave, onCancel }: {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Company Name <span className="text-gray-400 text-xs">(Optional)</span></label>
           <input
             type="text"
             value={formData.client_company}
             onChange={(e) => setFormData(prev => ({ ...prev, client_company: e.target.value }))}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
-            required
+            placeholder="Leave empty for homeowners/individuals"
           />
         </div>
 
