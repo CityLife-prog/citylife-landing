@@ -24,6 +24,7 @@ function getUserFromRequest(req: NextApiRequest) {
   }
 }
 
+// Force cache invalidation - v2
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const user = getUserFromRequest(req);
 
