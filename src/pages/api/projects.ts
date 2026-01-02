@@ -34,11 +34,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     try {
       const projects = await db.getProjects();
+      console.log('[DEBUG] db.getProjects() returned:', typeof projects, Array.isArray(projects), projects);
+
+      // Ensure projects is always an array
+      const projectsArray = Array.isArray(projects) ? projects : [];
+      console.log('[DEBUG] projectsArray:', projectsArray.length, 'items');
 
       // If client role, filter to only their projects
       const filteredProjects = user.role === 'client'
-        ? projects.filter((p: any) => p.client_id === user.id)
-        : projects;
+        ? projectsArray.filter((p: any) => p.client_id === user.id)
+        : projectsArray;
+
+      console.log('[DEBUG] filteredProjects:', filteredProjects.length, 'items');
+      console.log('[DEBUG] user.role:', user.role);
 
       res.status(200).json({
         success: true,
