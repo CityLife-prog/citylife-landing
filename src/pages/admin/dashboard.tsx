@@ -113,7 +113,7 @@ export default function AdminDashboard() {
 
       try {
         const [projectsRes, clientsRes, reviewsRes, notificationsRes] = await Promise.all([
-          fetch('/api/projects', {
+          fetch('/api/projects-v2', {
             headers: {
               'x-user-data': JSON.stringify(user)
             }
@@ -210,7 +210,7 @@ export default function AdminDashboard() {
 
     try {
       const [projectsRes, clientsRes, reviewsRes] = await Promise.all([
-        fetch('/api/projects', {
+        fetch('/api/projects-v2', {
           headers: {
             'x-user-data': JSON.stringify(user)
           }
