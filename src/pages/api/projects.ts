@@ -50,7 +50,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       res.status(200).json({
         success: true,
-        projects: filteredProjects
+        projects: filteredProjects,
+        // Temporary debug info - will remove after diagnosing
+        _debug: {
+          rawType: typeof projects,
+          isArray: Array.isArray(projects),
+          rawLength: Array.isArray(projects) ? projects.length : 'N/A',
+          arrayLength: projectsArray.length,
+          filteredLength: filteredProjects.length,
+          userRole: user.role,
+          userId: user.id,
+          rawProjects: projects
+        }
       });
     } catch (error) {
       console.error('Error fetching projects:', error);
