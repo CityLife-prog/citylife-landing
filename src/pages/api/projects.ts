@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { db } from '../../../lib/database';
+import { sql } from '@vercel/postgres';
 
 // Authentication helper
 function getUserFromRequest(req: NextApiRequest) {
@@ -34,35 +34,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'GET') {
     try {
-      const projects = await db.getProjects();
-      console.log('[DEBUG] db.getProjects() returned:', typeof projects, Array.isArray(projects), projects);
-
-      // Ensure projects is always an array
-      const projectsArray = Array.isArray(projects) ? projects : [];
-      console.log('[DEBUG] projectsArray:', projectsArray.length, 'items');
+      // Direct SQL query - bypasses db abstraction to avoid caching issues
+      const result = await sql`SELECT * FROM projects ORDER BY created_at DESC`;
+      const projects = result.rows || [];
 
       // If client role, filter to only their projects
       const filteredProjects = user.role === 'client'
-        ? projectsArray.filter((p: any) => p.client_id === user.id)
-        : projectsArray;
-
-      console.log('[DEBUG] filteredProjects:', filteredProjects.length, 'items');
-      console.log('[DEBUG] user.role:', user.role);
+        ? projects.filter((p: any) => p.client_id === user.id)
+        : projects;
 
       res.status(200).json({
         success: true,
         projects: filteredProjects,
-        // Temporary debug info - will remove after diagnosing
-        _debug: {
-          rawType: typeof projects,
-          isArray: Array.isArray(projects),
-          rawLength: Array.isArray(projects) ? projects.length : 'N/A',
-          arrayLength: projectsArray.length,
-          filteredLength: filteredProjects.length,
-          userRole: user.role,
-          userId: user.id,
-          rawProjects: projects
-        }
+        _cache_bust: Date.now(), // Proves this is new code
+        _version: 'v3-direct-sql'
       });
     } catch (error) {
       console.error('Error fetching projects:', error);
