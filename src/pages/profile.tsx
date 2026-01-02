@@ -118,7 +118,7 @@ export default function Profile() {
         }));
 
         // Update local storage if email changed
-        if (data.user && data.user.email !== user.email) {
+        if (data.user && user && data.user.email !== user.email) {
           const updatedUser = { ...user, email: data.user.email, name: data.user.name };
           localStorage.setItem('citylife_user', JSON.stringify(updatedUser));
         }
