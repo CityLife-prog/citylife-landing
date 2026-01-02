@@ -20,7 +20,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-purple-800 text-white py-24 px-4 relative overflow-hidden">
+    <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-purple-800 text-white py-14 px-4 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-black/20"></div>
       <div className="absolute top-20 right-10 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
