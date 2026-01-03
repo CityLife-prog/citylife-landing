@@ -48,7 +48,7 @@ interface Client {
   company: string;
   phone?: string;
   website?: string;
-  business_name?: string;
+  contact_role?: string;
   address?: string;
   projects: number;
   totalSpent: number;
@@ -167,7 +167,7 @@ export default function AdminDashboard() {
             company: c.company,
             phone: c.phone,
             website: c.website,
-            business_name: c.business_name,
+            contact_role: c.contact_role,
             address: c.address,
             projects: c.projects,
             totalSpent: c.total_spent
@@ -258,7 +258,7 @@ export default function AdminDashboard() {
           company: c.company,
           phone: c.phone,
           website: c.website,
-          business_name: c.business_name,
+          contact_role: c.contact_role,
           address: c.address,
           projects: c.projects,
           totalSpent: c.total_spent
@@ -596,7 +596,7 @@ export default function AdminDashboard() {
           company: updatedClient.company,
           phone: updatedClient.phone,
           website: updatedClient.website,
-          business_name: updatedClient.business_name,
+          contact_role: updatedClient.contact_role,
           address: updatedClient.address
         })
       });
@@ -2241,7 +2241,7 @@ function ClientCreateForm({ onSave, onCancel }: {
     company: '',
     phone: '',
     website: '',
-    business_name: '',
+    contact_role: '',
     address: ''
   });
 
@@ -2312,13 +2312,13 @@ function ClientCreateForm({ onSave, onCancel }: {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Contact Role</label>
           <input
             type="text"
-            value={formData.business_name}
-            onChange={(e) => setFormData(prev => ({ ...prev, business_name: e.target.value }))}
+            value={formData.contact_role}
+            onChange={(e) => setFormData(prev => ({ ...prev, contact_role: e.target.value }))}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
-            placeholder="e.g., DBA name"
+            placeholder="e.g., CEO, Owner, Manager"
           />
         </div>
 
@@ -2423,12 +2423,13 @@ function ClientEditForm({ client, onSave, onCancel }: {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Contact Role</label>
           <input
             type="text"
-            value={formData.business_name || ''}
-            onChange={(e) => setFormData(prev => ({ ...prev, business_name: e.target.value }))}
+            value={formData.contact_role || ''}
+            onChange={(e) => setFormData(prev => ({ ...prev, contact_role: e.target.value }))}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+            placeholder="e.g., CEO, Owner, Manager"
           />
         </div>
 
