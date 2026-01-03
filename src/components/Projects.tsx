@@ -175,35 +175,6 @@ export default function Projects() {
           ) : (
             displayProjects.map((project, index) => (
             <div key={index} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
-              {/* Project Image */}
-              <div className="relative h-64 bg-gradient-to-r from-gray-100 to-gray-200 overflow-hidden group">
-                <img
-                  src={project.image}
-                  alt={project.imageAlt}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  onError={(e) => {
-                    // Fallback if image fails to load
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.parentElement?.classList.add('flex', 'items-center', 'justify-center');
-                    const fallback = document.createElement('div');
-                    fallback.className = 'text-6xl text-gray-400';
-                    fallback.innerHTML = project.icon.props.children;
-                    e.currentTarget.parentElement?.appendChild(fallback);
-                  }}
-                />
-                {project.liveUrl && (
-                  <a
-                    href={project.liveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg hover:bg-white transition-all flex items-center gap-2 opacity-0 group-hover:opacity-100"
-                  >
-                    <FaExternalLinkAlt className="text-blue-600" />
-                    <span className="text-sm font-medium text-gray-900">Visit Site</span>
-                  </a>
-                )}
-              </div>
-
               <div className="p-8">
                 {/* Category & Timeline */}
                 <div className="flex justify-between items-center mb-4">
@@ -217,7 +188,20 @@ export default function Projects() {
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">
                   {project.title}
                 </h3>
-                <p className="text-blue-600 font-medium mb-4">{project.client}</p>
+                <div className="mb-4">
+                  <p className="text-blue-600 font-medium inline">{project.client}</p>
+                  {project.liveUrl && (
+                    <a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="ml-3 inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 underline"
+                    >
+                      <FaExternalLinkAlt className="text-xs" />
+                      Visit Site
+                    </a>
+                  )}
+                </div>
                 
                 {/* Description */}
                 <p className="text-gray-600 mb-6 leading-relaxed">
