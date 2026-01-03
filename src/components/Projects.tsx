@@ -14,8 +14,9 @@ interface Project {
 interface ProjectStats {
   totalProjects: number;
   completedProjects: number;
+  clientsSatisfied: number;
   totalRevenue: number;
-  satisfactionRate: number;
+  averageRating: number;
   foundingYear: number;
 }
 
@@ -24,8 +25,9 @@ export default function Projects() {
   const [stats, setStats] = useState<ProjectStats>({
     totalProjects: 0,
     completedProjects: 0,
+    clientsSatisfied: 0,
     totalRevenue: 0,
-    satisfactionRate: 100,
+    averageRating: 5.0,
     foundingYear: 2025
   });
   const [loading, setLoading] = useState(true);
@@ -142,21 +144,21 @@ export default function Projects() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-2xl mx-auto">
             <div className="text-center">
               <div className="text-3xl font-bold text-blue-600">
-                {loading ? '...' : stats.completedProjects}
+                {loading ? '...' : stats.clientsSatisfied}
               </div>
-              <div className="text-sm text-gray-600">Websites Completed</div>
+              <div className="text-sm text-gray-600">Clients Satisfied</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-green-600">
-                {loading ? '...' : `${stats.satisfactionRate}%`}
+                {loading ? '...' : stats.foundingYear}
               </div>
-              <div className="text-sm text-gray-600">Client Satisfaction</div>
+              <div className="text-sm text-gray-600">Founded</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-purple-600">
-                {loading ? '...' : stats.foundingYear}
+                {loading ? '...' : `${stats.averageRating}★`}
               </div>
-              <div className="text-sm text-gray-600">Year Founded</div>
+              <div className="text-sm text-gray-600">Average Rating</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-orange-600">1:1</div>

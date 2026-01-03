@@ -3,9 +3,9 @@ import { FaStar, FaQuoteLeft } from 'react-icons/fa';
 
 export default function Testimonials() {
   const [stats, setStats] = useState({
-    completedProjects: 2,
+    clientsSatisfied: 2,
     foundingYear: 2025,
-    satisfactionRate: 100
+    averageRating: 5.0
   });
   const [loading, setLoading] = useState(true);
   const [testimonials, setTestimonials] = useState<any[]>([]);
@@ -21,9 +21,9 @@ export default function Testimonials() {
 
         if (data.success) {
           setStats({
-            completedProjects: data.stats.completedProjects,
+            clientsSatisfied: data.stats.clientsSatisfied,
             foundingYear: data.stats.foundingYear,
-            satisfactionRate: data.stats.satisfactionRate
+            averageRating: data.stats.averageRating
           });
         }
       } catch (error) {
@@ -220,21 +220,21 @@ export default function Testimonials() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
               <div className="text-3xl font-bold text-blue-600 mb-2">
-                {loading ? '...' : `${stats.satisfactionRate}%`}
+                {loading ? '...' : stats.clientsSatisfied}
               </div>
-              <div className="text-sm text-gray-600">Client Satisfaction</div>
+              <div className="text-sm text-gray-600">Clients Satisfied</div>
             </div>
             <div>
               <div className="text-3xl font-bold text-green-600 mb-2">
-                {loading ? '...' : stats.completedProjects}
+                {loading ? '...' : stats.foundingYear}
               </div>
-              <div className="text-sm text-gray-600">Websites Completed</div>
+              <div className="text-sm text-gray-600">Founded</div>
             </div>
             <div>
               <div className="text-3xl font-bold text-purple-600 mb-2">
-                {loading ? '...' : stats.foundingYear}
+                {loading ? '...' : `${stats.averageRating}★`}
               </div>
-              <div className="text-sm text-gray-600">Year Founded</div>
+              <div className="text-sm text-gray-600">Average Rating</div>
             </div>
             <div>
               <div className="text-3xl font-bold text-orange-600 mb-2">1:1</div>
