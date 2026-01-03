@@ -168,8 +168,8 @@ export default function AdminDashboard() {
           })));
         }
 
-        if (Array.isArray(reviewsData)) {
-          setReviews(reviewsData.map((r: any) => ({
+        if (reviewsData.success && Array.isArray(reviewsData.reviews)) {
+          setReviews(reviewsData.reviews.map((r: any) => ({
             id: r.id.toString(),
             client_name: r.client_name,
             client_title: r.client_title,
@@ -259,8 +259,8 @@ export default function AdminDashboard() {
         })));
       }
 
-      if (Array.isArray(reviewsData)) {
-        setReviews(reviewsData.map((r: any) => ({
+      if (reviewsData.success && Array.isArray(reviewsData.reviews)) {
+        setReviews(reviewsData.reviews.map((r: any) => ({
           id: r.id.toString(),
           client_name: r.client_name,
           client_title: r.client_title,
