@@ -27,8 +27,14 @@ import FileUpload from '@/components/FileUpload';
 interface Project {
   id: string;
   name: string;
+  display_title?: string;
   client: string;
   client_id?: string;
+  description?: string;
+  technologies?: string;
+  key_results?: string;
+  live_url?: string;
+  category?: string;
   status: 'quote' | 'planning' | 'in-progress' | 'completed' | 'on-hold';
   budget: number;
   timeline: string;
@@ -1712,6 +1718,94 @@ function ProjectEditForm({ project, clients, onSave, onCancel }: {
               className="flex-1"
             />
             <span className="w-12 text-sm font-medium text-gray-700">{formData.progress}%</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Landing Page Display Fields */}
+      <div className="border-t pt-4 mt-4">
+        <h4 className="text-sm font-semibold text-gray-900 mb-3">Landing Page Display (Optional)</h4>
+        <p className="text-xs text-gray-500 mb-4">These fields control how the project appears on the public website. Leave blank to hide sections.</p>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Display Title <span className="text-gray-400 text-xs">(Optional - uses Project Name if empty)</span>
+            </label>
+            <input
+              type="text"
+              value={formData.display_title || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, display_title: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+              placeholder="e.g., VSR Snow Removal - Construction Company Website"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Category <span className="text-gray-400 text-xs">(Optional)</span>
+            </label>
+            <input
+              type="text"
+              value={formData.category || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+              placeholder="e.g., Web Development, Mobile App, Smart Home"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Live Website URL <span className="text-gray-400 text-xs">(Optional)</span>
+            </label>
+            <input
+              type="url"
+              value={formData.live_url || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, live_url: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+              placeholder="https://example.com"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Description <span className="text-gray-400 text-xs">(Optional)</span>
+            </label>
+            <textarea
+              value={formData.description || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+              rows={3}
+              placeholder="Brief description of the project and its features..."
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Technologies Used <span className="text-gray-400 text-xs">(Optional - one per line)</span>
+            </label>
+            <textarea
+              value={formData.technologies || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, technologies: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+              rows={4}
+              placeholder="Next.js&#10;Tailwind CSS&#10;TypeScript&#10;PostgreSQL"
+            />
+            <p className="text-xs text-gray-500 mt-1">Enter each technology on a new line</p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Key Results <span className="text-gray-400 text-xs">(Optional - one per line)</span>
+            </label>
+            <textarea
+              value={formData.key_results || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, key_results: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+              rows={4}
+              placeholder="Professional online presence&#10;Mobile-friendly design&#10;Improved customer inquiries&#10;Clear service presentation"
+            />
+            <p className="text-xs text-gray-500 mt-1">Enter each result on a new line</p>
           </div>
         </div>
       </div>

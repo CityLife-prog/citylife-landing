@@ -2,39 +2,9 @@ import { useState, useEffect } from 'react';
 import { FaStar, FaQuoteLeft } from 'react-icons/fa';
 
 export default function Testimonials() {
-  const [stats, setStats] = useState({
-    clientsSatisfied: 2,
-    foundingYear: 2025,
-    averageRating: 5.0
-  });
-  const [loading, setLoading] = useState(true);
   const [testimonials, setTestimonials] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [reviewsLoading, setReviewsLoading] = useState(true);
-
-  // Fetch stats
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await fetch('/api/public/projects');
-        const data = await response.json();
-
-        if (data.success) {
-          setStats({
-            clientsSatisfied: data.stats.clientsSatisfied,
-            foundingYear: data.stats.foundingYear,
-            averageRating: data.stats.averageRating
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching stats:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStats();
-  }, []);
 
   // Fetch reviews from database
   useEffect(() => {
@@ -205,43 +175,6 @@ export default function Testimonials() {
             )}
           </div>
         )}
-
-        {/* Trust Indicators */}
-        <div className="bg-gray-50 rounded-2xl p-12 mb-16">
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              Building Trust, One Project at a Time
-            </h3>
-            <p className="text-gray-600">
-              Quality work and honest service - that's the foundation of every client relationship
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-3xl font-bold text-blue-600 mb-2">
-                {loading ? '...' : stats.clientsSatisfied}
-              </div>
-              <div className="text-sm text-gray-600">Clients Satisfied</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-green-600 mb-2">
-                {loading ? '...' : stats.foundingYear}
-              </div>
-              <div className="text-sm text-gray-600">Founded</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-purple-600 mb-2">
-                {loading ? '...' : `${stats.averageRating}★`}
-              </div>
-              <div className="text-sm text-gray-600">Average Rating</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-orange-600 mb-2">1:1</div>
-              <div className="text-sm text-gray-600">Personal Service</div>
-            </div>
-          </div>
-        </div>
 
         {/* CTA Section */}
         <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 rounded-2xl p-12 text-center text-white">
