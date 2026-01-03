@@ -146,20 +146,31 @@ export default function AdminDashboard() {
         const reviewsData = await reviewsRes.json();
         const notificationsData = await notificationsRes.json();
 
-        if (projectsData.success) {
+        if (projectsData.success && Array.isArray(projectsData.projects)) {
           setProjects(projectsData.projects.map((p: any) => ({
             id: p.id.toString(),
             name: p.name,
+            display_title: p.display_title,
             client: p.client,
             client_id: p.client_id,
+            description: p.description,
+            technologies: p.technologies,
+            key_results: p.key_results,
+            live_url: p.live_url,
+            category: p.category,
             status: p.status,
             budget: p.budget,
             timeline: p.timeline,
             progress: p.progress
           })));
+        } else {
+          console.error('Invalid projects data received:', projectsData);
+          if (!projectsData.success) {
+            console.error('Projects API returned error:', projectsData.error || projectsData.message);
+          }
         }
 
-        if (clientsData.success) {
+        if (clientsData.success && Array.isArray(clientsData.clients)) {
           setClients(clientsData.clients.map((c: any) => ({
             id: c.id.toString(),
             name: c.name,
@@ -172,6 +183,11 @@ export default function AdminDashboard() {
             projects: c.projects,
             totalSpent: c.total_spent
           })));
+        } else {
+          console.error('Invalid clients data received:', clientsData);
+          if (!clientsData.success) {
+            console.error('Clients API returned error:', clientsData.error || clientsData.message);
+          }
         }
 
         if (reviewsData.success && Array.isArray(reviewsData.reviews)) {
@@ -368,8 +384,14 @@ export default function AdminDashboard() {
         body: JSON.stringify({
           id: updatedProject.id,
           name: updatedProject.name,
+          display_title: updatedProject.display_title,
           client: updatedProject.client,
           client_id: updatedProject.client_id,
+          description: updatedProject.description,
+          technologies: updatedProject.technologies,
+          key_results: updatedProject.key_results,
+          live_url: updatedProject.live_url,
+          category: updatedProject.category,
           status: updatedProject.status,
           budget: updatedProject.budget,
           timeline: updatedProject.timeline,
