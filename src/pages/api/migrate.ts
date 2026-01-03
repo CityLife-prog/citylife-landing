@@ -25,7 +25,16 @@ function getUserFromRequest(req: NextApiRequest) {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // Allow in development, or require admin authentication in production
+  // Only allow POST requests for security
+  if (req.method !== 'POST') {
+    return res.status(405).json({
+      error: 'Method not allowed',
+      message: 'Please use POST request to run migrations',
+      hint: 'Use the admin dashboard or curl: curl -X POST https://www.citylyfe.net/api/migrate -H "x-user-data: {...}"'
+    });
+  }
+
+  // Require admin authentication in production
   if (process.env.NODE_ENV === 'production') {
     const user = getUserFromRequest(req);
     if (!user || user.role !== 'admin') {

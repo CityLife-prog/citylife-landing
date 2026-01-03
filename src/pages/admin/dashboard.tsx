@@ -253,7 +253,7 @@ export default function AdminDashboard() {
       const clientsData = await clientsRes.json();
       const reviewsData = await reviewsRes.json();
 
-      if (projectsData.success) {
+      if (projectsData.success && Array.isArray(projectsData.projects)) {
         setProjects(projectsData.projects.map((p: any) => ({
           id: p.id.toString(),
           name: p.name,
@@ -264,9 +264,11 @@ export default function AdminDashboard() {
           timeline: p.timeline,
           progress: p.progress
         })));
+      } else {
+        console.error('Invalid projects data in refreshData:', projectsData);
       }
 
-      if (clientsData.success) {
+      if (clientsData.success && Array.isArray(clientsData.clients)) {
         setClients(clientsData.clients.map((c: any) => ({
           id: c.id.toString(),
           name: c.name,
@@ -279,6 +281,8 @@ export default function AdminDashboard() {
           projects: c.projects,
           totalSpent: c.total_spent
         })));
+      } else {
+        console.error('Invalid clients data in refreshData:', clientsData);
       }
 
       if (reviewsData.success && Array.isArray(reviewsData.reviews)) {

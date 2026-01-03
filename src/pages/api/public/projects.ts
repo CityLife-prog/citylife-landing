@@ -15,7 +15,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const publicProjects = allProjects.map((project: any) => ({
       id: project.id,
       name: project.name,
+      display_title: project.display_title,
       client: project.client,
+      description: project.description,
+      technologies: project.technologies,
+      key_results: project.key_results,
+      live_url: project.live_url,
+      category: project.category,
       status: project.status,
       budget: project.budget,
       timeline: project.timeline,

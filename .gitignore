@@ -50,6 +50,9 @@ lib/database-sqlite.ts
 TODO
 PROJECT_TODO.md
 
+# private folder (guides, notes, personal docs)
+/private/
+
 # uploads (user-generated content)
 /public/uploads/*
 !/public/uploads/.gitkeep
