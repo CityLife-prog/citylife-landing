@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FaExternalLinkAlt, FaGithub, FaMobile, FaDesktop, FaCogs } from 'react-icons/fa';
+import { FaExternalLinkAlt, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 interface Project {
   id: number;
@@ -37,6 +37,19 @@ export default function Projects() {
     foundingYear: 2025
   });
   const [loading, setLoading] = useState(true);
+  const [expandedProjects, setExpandedProjects] = useState<Set<number>>(new Set());
+
+  const toggleProject = (projectId: number) => {
+    setExpandedProjects(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(projectId)) {
+        newSet.delete(projectId);
+      } else {
+        newSet.add(projectId);
+      }
+      return newSet;
+    });
+  };
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -128,8 +141,11 @@ export default function Projects() {
                 ? project.key_results.split('\n').map(r => r.trim()).filter(Boolean)
                 : [];
 
+              const isExpanded = expandedProjects.has(project.id);
+              const hasDetails = project.description || technologies.length > 0 || keyResults.length > 0;
+
               return (
-                <div key={index} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
+                <div key={project.id} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
                   <div className="p-8">
                     {/* Category & Timeline */}
                     <div className="flex justify-between items-center mb-4">
@@ -160,50 +176,81 @@ export default function Projects() {
                       )}
                     </div>
 
-                    {/* Description - only show if exists */}
-                    {project.description && (
-                      <p className="text-gray-600 mb-6 leading-relaxed">
-                        {project.description}
-                      </p>
-                    )}
-
-                    {/* Technologies - only show if exists */}
-                    {technologies.length > 0 && (
-                      <div className="mb-6">
-                        <h4 className="font-semibold text-gray-900 mb-3">Technologies Used:</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {technologies.map((tech, idx) => (
-                            <span key={idx} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
-                              {tech}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Key Results - only show if exists */}
-                    {keyResults.length > 0 && (
-                      <div className="mb-6">
-                        <h4 className="font-semibold text-gray-900 mb-3">Key Results:</h4>
-                        <ul className="space-y-2">
-                          {keyResults.map((result, idx) => (
-                            <li key={idx} className="flex items-center text-sm text-gray-600">
-                              <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
-                              {result}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {/* Budget & CTA */}
-                    <div className="border-t pt-6 flex justify-between items-center">
+                    {/* Budget */}
+                    <div className="mb-4">
                       <span className="text-lg font-bold text-gray-900">
                         ${project.budget.toLocaleString()}
                       </span>
+                    </div>
+
+                    {/* View More Button - only show if there are details to display */}
+                    {hasDetails && (
+                      <button
+                        onClick={() => toggleProject(project.id)}
+                        className="w-full mb-4 flex items-center justify-center gap-2 text-blue-600 hover:text-blue-800 font-medium py-2 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors"
+                      >
+                        {isExpanded ? (
+                          <>
+                            <span>View Less</span>
+                            <FaChevronUp className="text-sm" />
+                          </>
+                        ) : (
+                          <>
+                            <span>View More Details</span>
+                            <FaChevronDown className="text-sm" />
+                          </>
+                        )}
+                      </button>
+                    )}
+
+                    {/* Collapsible Details Section */}
+                    {isExpanded && hasDetails && (
+                      <div className="space-y-6 mb-6 pt-4 border-t">
+                        {/* Description */}
+                        {project.description && (
+                          <div>
+                            <p className="text-gray-600 leading-relaxed">
+                              {project.description}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Technologies */}
+                        {technologies.length > 0 && (
+                          <div>
+                            <h4 className="font-semibold text-gray-900 mb-3">Technologies Used:</h4>
+                            <div className="flex flex-wrap gap-2">
+                              {technologies.map((tech, idx) => (
+                                <span key={idx} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+                                  {tech}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Key Results */}
+                        {keyResults.length > 0 && (
+                          <div>
+                            <h4 className="font-semibold text-gray-900 mb-3">Key Results:</h4>
+                            <ul className="space-y-2">
+                              {keyResults.map((result, idx) => (
+                                <li key={idx} className="flex items-center text-sm text-gray-600">
+                                  <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+                                  {result}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* CTA Button */}
+                    <div className="border-t pt-6">
                       <button
                         onClick={scrollToContact}
-                        className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                        className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
                       >
                         Start Similar Project
                       </button>
