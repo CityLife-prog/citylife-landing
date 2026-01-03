@@ -38,25 +38,32 @@ export async function verifyPassword(password: string, hashedPassword: string): 
 // Initialize database with schema
 export async function initializeDatabase() {
   try {
-    // Run migrations
-    const migrationPath = path.join(process.cwd(), 'lib', 'migrations', '001_initial_schema.sql');
+    const migrationsDir = path.join(process.cwd(), 'lib', 'migrations');
+    const migrationFiles = ['001_initial_schema.sql', '002_add_project_display_fields.sql'];
 
-    if (fs.existsSync(migrationPath)) {
-      const migrationSQL = fs.readFileSync(migrationPath, 'utf8');
+    for (const migrationFile of migrationFiles) {
+      const migrationPath = path.join(migrationsDir, migrationFile);
 
-      // Replace placeholder password with actual hashed password
-      const hashedPassword = bcrypt ? hashPasswordSync('ChangeMe123!') : 'ChangeMe123!';
-      const sqlWithPassword = migrationSQL.replace('$2b$10$placeholder', hashedPassword);
+      if (fs.existsSync(migrationPath)) {
+        const migrationSQL = fs.readFileSync(migrationPath, 'utf8');
 
-      // Execute migration (Postgres will handle each statement)
-      await sql.query(sqlWithPassword);
+        if (migrationFile === '001_initial_schema.sql') {
+          // Replace placeholder password with actual hashed password
+          const hashedPassword = bcrypt ? hashPasswordSync('ChangeMe123!') : 'ChangeMe123!';
+          const sqlWithPassword = migrationSQL.replace('$2b$10$placeholder', hashedPassword);
+          await sql.query(sqlWithPassword);
+        } else {
+          // Execute other migrations as-is
+          await sql.query(migrationSQL);
+        }
 
-      console.log('✅ Database initialized successfully');
-      if (!bcrypt) {
-        console.warn('⚠️  Password stored without hashing - run npm install to enable bcrypt');
+        console.log(`✅ Migration ${migrationFile} completed`);
       }
-    } else {
-      console.warn('⚠️  Migration file not found, skipping initialization');
+    }
+
+    console.log('✅ Database initialized successfully');
+    if (!bcrypt) {
+      console.warn('⚠️  Password stored without hashing - run npm install to enable bcrypt');
     }
   } catch (error) {
     console.error('Error initializing database:', error);
