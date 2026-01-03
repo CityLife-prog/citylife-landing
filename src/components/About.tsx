@@ -3,9 +3,9 @@ import { FaAward, FaUsers, FaRocket, FaHandshake, FaCode, FaLightbulb, FaFlag } 
 
 export default function About() {
   const [stats, setStats] = useState({
-    completedProjects: 2,
+    clientsSatisfied: 2,
     foundingYear: 2025,
-    satisfactionRate: 100
+    averageRating: 5.0
   });
   const [loading, setLoading] = useState(true);
 
@@ -17,9 +17,9 @@ export default function About() {
         
         if (data.success) {
           setStats({
-            completedProjects: data.stats.completedProjects,
+            clientsSatisfied: data.stats.clientsSatisfied,
             foundingYear: data.stats.foundingYear,
-            satisfactionRate: data.stats.satisfactionRate
+            averageRating: data.stats.averageRating
           });
         }
       } catch (error) {
@@ -55,25 +55,25 @@ export default function About() {
   ];
 
   const statsDisplay = [
-    { 
-      number: loading ? "..." : stats.completedProjects.toString(), 
-      label: "Websites Completed", 
-      color: "text-blue-600" 
+    {
+      number: loading ? "..." : stats.clientsSatisfied.toString(),
+      label: "Clients Satisfied",
+      color: "text-blue-600"
     },
-    { 
-      number: loading ? "..." : stats.foundingYear.toString(), 
-      label: "Founded", 
-      color: "text-green-600" 
+    {
+      number: loading ? "..." : stats.foundingYear.toString(),
+      label: "Founded",
+      color: "text-green-600"
     },
-    { 
-      number: loading ? "..." : `${stats.satisfactionRate}%`, 
-      label: "Client Satisfaction", 
-      color: "text-purple-600" 
+    {
+      number: loading ? "..." : `${stats.averageRating}★`,
+      label: "Average Rating",
+      color: "text-purple-600"
     },
-    { 
-      number: "1-on-1", 
-      label: "Personal Service", 
-      color: "text-orange-600" 
+    {
+      number: "1-on-1",
+      label: "Personal Service",
+      color: "text-orange-600"
     }
   ];
 
