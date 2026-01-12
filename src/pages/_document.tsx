@@ -5,9 +5,8 @@ export default function Document() {
     <Html lang="en">
       <Head>
         {/* Favicon */}
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="icon" href="/logo2.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/logo2.png" />
 
         {/* SEO Meta Tags */}
         <meta name="description" content="CityLyfe LLC - Empowering Your Business With Code. Veteran-owned software development company specializing in web development, mobile apps, smart home automation, and digital solutions." />

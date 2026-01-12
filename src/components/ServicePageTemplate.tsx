@@ -223,8 +223,8 @@ export default function ServicePageTemplate({
         <section className="mb-8">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-semibold text-gray-900">Photo Gallery</h2>
-            <Link 
-              href="/quote" 
+            <Link
+              href="/#contact"
               className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
               onClick={() => {
                 // Analytics tracking
@@ -274,7 +274,7 @@ export default function ServicePageTemplate({
           
           <div className="mt-4 text-sm text-gray-600 bg-gray-50 p-3 rounded">
             <p>✨ Browse our portfolio to see examples of our {title.toLowerCase()} work</p>
-            <p>📞 Questions about what you see? <Link href="/quote" className="text-blue-600 hover:underline">Contact us for details</Link></p>
+            <p>📞 Questions about what you see? <Link href="/#contact" className="text-blue-600 hover:underline">Contact us for details</Link></p>
           </div>
         </section>
         
@@ -284,8 +284,8 @@ export default function ServicePageTemplate({
             Get a free estimate for your {title.toLowerCase()} project. We typically respond within {estimatedResponseTime}.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <Link 
-              href="/quote" 
+            <Link
+              href="/#contact"
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium text-center"
               onClick={() => {
                 if (typeof window !== 'undefined' && window.gtag) {

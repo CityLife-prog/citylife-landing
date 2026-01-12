@@ -64,6 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         rating,
         review_text,
         project_name,
+        project_id,
         image_url,
         is_active,
         sort_order
@@ -86,6 +87,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         rating: parseInt(rating),
         reviewText: review_text,
         projectName: project_name || null,
+        projectId: project_id || null,
         imageUrl: image_url || '/api/placeholder/80/80',
         isActive: is_active !== undefined ? (is_active ? 1 : 0) : 1,
         sortOrder: parseInt(sort_order) || 0

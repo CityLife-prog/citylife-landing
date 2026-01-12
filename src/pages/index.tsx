@@ -3,7 +3,6 @@ import Hero from '@/components/Hero';
 import About from '@/components/About';
 import Services from '@/components/Services';
 import Projects from '@/components/Projects';
-import Testimonials from '@/components/Testimonials';
 import Contact from '@/components/Contact';
 
 export default function Home() {
@@ -15,13 +14,13 @@ export default function Home() {
         <meta name="keywords" content="business IT solutions, custom web development, automation for small businesses, mobile app development, Colorado IT services" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
-        
+
         {/* Open Graph */}
         <meta property="og:title" content="CityLyfe LLC - Custom IT Solutions for Growing Businesses" />
         <meta property="og:description" content="Transform your business with professional web development, mobile apps, and automation solutions." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://citylifellc.com" />
-        
+
         {/* Schema.org markup */}
         <script
           type="application/ld+json"
@@ -54,13 +53,12 @@ export default function Home() {
           }}
         />
       </Head>
-      
+
       <main>
         <Hero />
         <About />
         <Services />
         <Projects />
-        <Testimonials />
         <Contact />
       </main>
     </>

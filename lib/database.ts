@@ -39,7 +39,16 @@ export async function verifyPassword(password: string, hashedPassword: string): 
 export async function initializeDatabase() {
   try {
     const migrationsDir = path.join(process.cwd(), 'lib', 'migrations');
-    const migrationFiles = ['001_initial_schema.sql', '002_add_project_display_fields.sql'];
+    const migrationFiles = [
+      '001_initial_schema.sql',
+      '002_add_project_display_fields.sql',
+      '003_add_services_table.sql',
+      '004_add_featured_projects.sql',
+      '005_add_website_audit_service.sql',
+      '006_add_project_total_spent.sql',
+      '007_add_review_foreign_key_constraints.sql',
+      '008_fix_review_sequence.sql'
+    ];
 
     for (const migrationFile of migrationFiles) {
       const migrationPath = path.join(migrationsDir, migrationFile);
@@ -86,8 +95,17 @@ export const db = {
 
   createProject: async (project: any) => {
     const { rows } = await sql`
-      INSERT INTO projects (name, client, client_id, status, budget, timeline, progress)
-      VALUES (${project.name}, ${project.client}, ${project.clientId}, ${project.status}, ${project.budget}, ${project.timeline}, ${project.progress})
+      INSERT INTO projects (name, client, client_id, status, budget, timeline, progress, total_spent)
+      VALUES (
+        ${project.name},
+        ${project.client},
+        ${project.clientId},
+        ${project.status},
+        ${project.budget},
+        ${project.timeline},
+        ${project.progress},
+        ${project.totalSpent || 0}
+      )
       RETURNING id
     `;
     return { lastInsertRowid: rows[0].id };
@@ -434,5 +452,85 @@ export const db = {
       WHERE id = ${messageId} AND recipient_id = ${userId}
     `;
     return { changes: rowCount || 0 };
+  },
+
+  // Services
+  getServices: async (activeOnly = true) => {
+    if (activeOnly) {
+      const { rows } = await sql`SELECT * FROM services WHERE is_active = true ORDER BY sort_order ASC`;
+      return rows;
+    } else {
+      const { rows } = await sql`SELECT * FROM services ORDER BY sort_order ASC`;
+      return rows;
+    }
+  },
+
+  getService: async (id: number) => {
+    const { rows } = await sql`SELECT * FROM services WHERE id = ${id}`;
+    return rows[0];
+  },
+
+  createService: async (service: any) => {
+    const { rows } = await sql`
+      INSERT INTO services (
+        title, description, who_for, features, disclaimer, price,
+        category, hardware_included, is_active, sort_order
+      )
+      VALUES (
+        ${service.title}, ${service.description}, ${service.who_for},
+        ${JSON.stringify(service.features)}::jsonb, ${service.disclaimer},
+        ${service.price}, ${service.category}, ${service.hardware_included},
+        ${service.is_active}, ${service.sort_order}
+      )
+      RETURNING id
+    `;
+    return { lastInsertRowid: rows[0].id };
+  },
+
+  updateService: async (id: number, updates: any) => {
+    // Filter out updated_at from updates to avoid duplicate assignment
+    const filteredUpdates = Object.keys(updates)
+      .filter(key => key !== 'updated_at' && key !== 'created_at')
+      .reduce((obj: any, key) => {
+        obj[key] = updates[key];
+        return obj;
+      }, {});
+
+    const fields = Object.keys(filteredUpdates);
+    const values = Object.values(filteredUpdates).map(val => {
+      // Convert arrays to JSONB for features field
+      if (Array.isArray(val)) {
+        return JSON.stringify(val);
+      }
+      return val;
+    });
+
+    const setClause = fields.map((field, i) => {
+      // Handle JSONB fields
+      if (field === 'features') {
+        return `${field} = $${i + 1}::jsonb`;
+      }
+      return `${field} = $${i + 1}`;
+    }).join(', ');
+
+    const query = `UPDATE services SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE id = $${fields.length + 1} RETURNING *`;
+
+    const { rows } = await sql.query(query, [...values, id]);
+    return rows[0];
+  },
+
+  deleteService: async (id: number) => {
+    await sql`DELETE FROM services WHERE id = ${id}`;
+    return { changes: 1 };
+  },
+
+  getServicesByCategory: async (category: string, activeOnly = true) => {
+    if (activeOnly) {
+      const { rows } = await sql`SELECT * FROM services WHERE category = ${category} AND is_active = true ORDER BY sort_order ASC`;
+      return rows;
+    } else {
+      const { rows } = await sql`SELECT * FROM services WHERE category = ${category} ORDER BY sort_order ASC`;
+      return rows;
+    }
   }
 };

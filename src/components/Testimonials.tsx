@@ -45,16 +45,6 @@ export default function Testimonials() {
     return () => clearInterval(interval);
   }, [testimonials.length]);
 
-  const scrollToContact = () => {
-    const el = document.getElementById('contact');
-    if (el) {
-      const headerOffset = 60;
-      const elementPosition = el.getBoundingClientRect().top + window.scrollY;
-      const offsetPosition = elementPosition - headerOffset;
-      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-    }
-  };
-
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
       <FaStar 
@@ -175,41 +165,6 @@ export default function Testimonials() {
             )}
           </div>
         )}
-
-        {/* CTA Section */}
-        <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 rounded-2xl p-12 text-center text-white">
-          <h3 className="text-3xl font-bold mb-4">
-            Ready to Be Our Next Success Story?
-          </h3>
-          <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-            Join these satisfied clients who've experienced the personal touch and quality
-            that comes with working with CityLyfe LLC.
-          </p>
-          <div className="flex justify-center gap-4 flex-wrap">
-            <button 
-              onClick={scrollToContact}
-              className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-all transform hover:scale-105"
-            >
-              Start Your Transformation
-            </button>
-            <button 
-              onClick={scrollToContact}
-              className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-all"
-            >
-              Schedule Free Consultation
-            </button>
-          </div>
-          
-          {/* Guarantee */}
-          <div className="mt-8 text-center">
-            <div className="inline-flex items-center bg-white/20 rounded-full px-6 py-3">
-              <span className="text-yellow-300 mr-2">⭐</span>
-              <span className="text-sm font-medium">
-                100% Satisfaction Guarantee - We don't stop until you're thrilled with the results
-              </span>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );

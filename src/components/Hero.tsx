@@ -27,36 +27,26 @@ export default function Hero() {
       <div className="absolute bottom-20 left-10 w-24 h-24 bg-purple-300/20 rounded-full blur-lg"></div>
       
       <div className="max-w-6xl mx-auto text-center relative z-10">
-        <div className="mb-6">
-          <span className="inline-block bg-white/20 text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
-            🚀 Empowering Your Business With Code
-          </span>
-        </div>
-        
         <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-          <span className="block">Transform Your Business</span>
-          <span className="block bg-gradient-to-r from-yellow-300 to-orange-400 bg-clip-text text-transparent">
-            With Custom IT Solutions
-          </span>
+          Transform Your Business With Custom IT Solutions
         </h1>
-        
+
         <p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto leading-relaxed">
-          We are CityLyfe, and we create custom websites, mobile apps, local smart home integration, and automation solutions
-          that help small businesses grow and succeed.
+          Custom web applications, smart automation, and IT solutions built for businesses that refuse to settle. Fixed pricing. No surprises.
         </p>
         
         <div className="flex justify-center gap-4 flex-wrap mb-8">
-          <button 
+          <button
             onClick={scrollToContact}
             className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-4 rounded-lg font-semibold hover:from-orange-600 hover:to-red-600 transition-all transform hover:scale-105 shadow-lg"
           >
-            Start Your Project
+            Get Free Quote
           </button>
           <button
             onClick={scrollToServices}
             className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-all transform hover:scale-105"
           >
-            View Our Services
+            View Our Work
           </button>
         </div>
         

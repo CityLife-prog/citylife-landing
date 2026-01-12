@@ -1,108 +1,70 @@
-import { FaCode, FaMobile, FaCogs, FaCloud, FaHome, FaHeadset, FaSearch } from 'react-icons/fa';
+import { useState, useEffect } from 'react';
+import { FaCode, FaMobile, FaCogs, FaCloud, FaHome, FaHeadset, FaSearch, FaChevronDown, FaChevronUp, FaChartLine } from 'react-icons/fa';
+
+interface Service {
+  id: number;
+  title: string;
+  description: string;
+  who_for: string;
+  features: string[];
+  disclaimer?: string;
+  price: string;
+  category: string;
+  hardware_included: boolean;
+  sort_order: number;
+}
 
 export default function Services() {
-  const projectServices = [
-    {
-      icon: <FaCode className="text-4xl text-blue-600" />,
-      title: "Custom Web Development",
-      description: "Professional, responsive websites built for performance, security, and scalability.",
-      whoFor: "Businesses, contractors, startups, and organizations that need a strong online presence or improvements to an existing site.",
-      features: [
-        "Modern, mobile-first website design",
-        "Performance-optimized builds",
-        "Secure deployment and configuration",
-        "SEO-ready site structure"
-      ],
-      disclaimer: "CityLyfe is not limited to a single framework or platform. While we frequently work with modern tools such as React and Next.js, we also work with websites already deployed on the web, support other frameworks, CMS platforms, and custom stacks, and can improve, refactor, or extend existing sites without requiring full rebuilds.",
-      price: "Starting at $800"
-    },
-    {
-      icon: <FaHome className="text-4xl text-orange-600" />,
-      title: "Local Smart Home Integration",
-      description: "Smart home setup and automation focused on reliability, security, and ease of use.",
-      whoFor: "Homeowners, rental properties, and small offices looking to integrate smart technology locally.",
-      features: [
-        "Smart lighting and automation",
-        "Security camera and monitoring setup",
-        "Climate control systems",
-        "Voice assistant configuration"
-      ],
-      disclaimer: "All hardware and devices are purchased by the client unless explicitly stated otherwise in the signed contract. CityLyfe provides professional recommendations, installation, and configuration services.",
-      price: "Starting at $100"
-    },
-    {
-      icon: <FaCogs className="text-4xl text-purple-600" />,
-      title: "Business Automation",
-      description: "Custom automation solutions that reduce manual work, improve accuracy, and streamline operations.",
-      whoFor: "Businesses relying on repetitive tasks, spreadsheets, manual data entry, or disconnected systems.",
-      features: [
-        "Workflow automation",
-        "Email and notification systems",
-        "Data processing and validation",
-        "API and third-party integrations"
-      ],
-      price: "Starting at $500"
-    },
-    {
-      icon: <FaMobile className="text-4xl text-green-600" />,
-      title: "Mobile App Development",
-      description: "Custom mobile applications designed for usability, performance, and long-term growth.",
-      whoFor: "Startups, internal business tools, and customer-facing mobile applications.",
-      features: [
-        "iOS and Android support",
-        "Cross-platform development",
-        "App store submission assistance",
-        "Analytics and usage tracking"
-      ],
-      price: "Starting at $2,000"
-    }
-  ];
+  const [expandedServices, setExpandedServices] = useState<Set<number>>(new Set());
+  const [projectServices, setProjectServices] = useState<Service[]>([]);
+  const [monthlyServices, setMonthlyServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const monthlyServices = [
-    {
-      icon: <FaSearch className="text-4xl text-indigo-600" />,
-      title: "SEO & Website Visibility",
-      description: "Search engine optimization focused on technical best practices, performance, and long-term visibility.",
-      whoFor: "Businesses that want to improve search presence, local visibility, and website performance over time.",
-      features: [
-        "Technical SEO monitoring",
-        "Page speed and performance optimization",
-        "Mobile usability improvements",
-        "Metadata updates (titles, descriptions, structured data)",
-        "Google Search Console setup and monitoring",
-        "Google Business Profile optimization",
-        "Monthly performance summaries"
-      ],
-      disclaimer: "Search engine optimization results vary by industry and competition. Specific rankings, traffic levels, and conversions cannot be guaranteed.",
-      price: "Starting at $300/month"
-    },
-    {
-      icon: <FaHeadset className="text-4xl text-red-600" />,
-      title: "Ongoing Support & Maintenance",
-      description: "Proactive support to keep websites and systems secure, updated, and running smoothly.",
-      whoFor: "Clients who want peace of mind after launch and priority support when changes or issues arise.",
-      features: [
-        "Bug fixes and issue resolution",
-        "Security patches and updates",
-        "Performance monitoring",
-        "Content and minor updates"
-      ],
-      price: "Starting at $50/month"
-    },
-    {
-      icon: <FaCloud className="text-4xl text-blue-500" />,
-      title: "Cloud & Hosting Solutions",
-      description: "Secure, scalable hosting and infrastructure management without the complexity of managing servers.",
-      whoFor: "Businesses that want reliable hosting and monitoring without handling infrastructure themselves.",
-      features: [
-        "Domain and DNS configuration",
-        "SSL certificates",
-        "CDN and performance optimization",
-        "Monitoring and backups"
-      ],
-      price: "Starting at $25/month"
-    }
-  ];
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await fetch('/api/public/services');
+        const data = await response.json();
+
+        if (data.success) {
+          setProjectServices(data.services.project || []);
+          setMonthlyServices(data.services.monthly || []);
+        }
+      } catch (error) {
+        console.error('Error fetching services:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServices();
+  }, []);
+
+  const toggleService = (serviceId: number) => {
+    setExpandedServices(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(serviceId)) {
+        newSet.delete(serviceId);
+      } else {
+        newSet.add(serviceId);
+      }
+      return newSet;
+    });
+  };
+
+  // Icon mapping (not stored in database)
+  const getServiceIcon = (title: string) => {
+    if (title.includes('Audit') || title.includes('Updates')) return <FaChartLine className="text-4xl text-teal-600" />;
+    if (title.includes('Web Development')) return <FaCode className="text-4xl text-blue-600" />;
+    if (title.includes('Smart Home')) return <FaHome className="text-4xl text-orange-600" />;
+    if (title.includes('Automation')) return <FaCogs className="text-4xl text-purple-600" />;
+    if (title.includes('Mobile')) return <FaMobile className="text-4xl text-green-600" />;
+    if (title.includes('SEO')) return <FaSearch className="text-4xl text-indigo-600" />;
+    if (title.includes('Support')) return <FaHeadset className="text-4xl text-red-600" />;
+    if (title.includes('Cloud')) return <FaCloud className="text-4xl text-blue-500" />;
+    return <FaCogs className="text-4xl text-gray-600" />;
+  };
+
 
   const scrollToContact = () => {
     const el = document.getElementById('contact');
@@ -130,12 +92,10 @@ export default function Services() {
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Services
+            What We Build
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            CityLyfe delivers modern digital solutions for businesses and individuals who need
-            reliable systems, clear pricing, and long-term support. We work with both new and
-            existing technology and tailor every solution to your specific goals.
+            Whether it's one-time projects or continued support, we've got you covered.
           </p>
         </div>
 
@@ -143,165 +103,286 @@ export default function Services() {
         <div className="mb-20">
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold text-gray-900 mb-4">
-              Project-Based Services
+              One-Time Projects
             </h3>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              These services are typically one-time projects with a defined scope and delivery.
+              Fixed-price projects with defined scope and delivery timeline.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {projectServices.map((service, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 border border-gray-100"
-              >
-                <div className="mb-6">{service.icon}</div>
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-blue-600"></div>
+              <p className="mt-4 text-gray-600">Loading services...</p>
+            </div>
+          ) : projectServices.length === 0 ? (
+            <div className="text-center py-12 bg-gray-50 rounded-lg">
+              <p className="text-gray-600">No project services available at this time.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {projectServices.map((service) => {
+              const isExpanded = expandedServices.has(service.id);
 
-                <h4 className="text-2xl font-bold text-gray-900 mb-4">
-                  {service.title}
-                </h4>
+              return (
+                <div
+                  key={service.id}
+                  className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 cursor-pointer"
+                  onClick={() => !isExpanded && toggleService(service.id)}
+                >
+                  {!isExpanded ? (
+                    /* Collapsed - Ultra Compact Card View */
+                    <div className="p-4">
+                      {/* Icon */}
+                      <div className="flex justify-center mb-3">
+                        {getServiceIcon(service.title)}
+                      </div>
 
-                <p className="text-gray-600 mb-6 leading-relaxed">
-                  {service.description}
-                </p>
+                      {/* Title */}
+                      <h4 className="text-base font-bold text-gray-900 mb-2 text-center leading-tight">
+                        {service.title}
+                      </h4>
 
-                <div className="mb-6">
-                  <h5 className="font-semibold text-gray-900 mb-2">Who this is for:</h5>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    {service.whoFor}
-                  </p>
+                      {/* Price */}
+                      <div className="text-center mb-3">
+                        <span className="text-lg font-bold text-blue-600">{service.price}</span>
+                      </div>
+
+                      {/* View Details Button */}
+                      <button
+                        className="w-full flex items-center justify-center gap-1 text-blue-600 hover:text-blue-800 font-medium py-1.5 text-xs"
+                      >
+                        <span>View Details</span>
+                        <FaChevronDown className="text-xs" />
+                      </button>
+                    </div>
+                  ) : (
+                    /* Expanded - Full Details View */
+                    <div className="p-6">
+                      {/* Title */}
+                      <h4 className="text-xl font-bold text-gray-900 mb-4 text-center">
+                        {service.title}
+                      </h4>
+
+                      {/* Pricing */}
+                      <div className="bg-blue-50 p-3 rounded-lg border border-blue-200 mb-4">
+                        <div className="flex justify-between items-center">
+                          <span className="font-semibold text-gray-900 text-sm">Price Estimate:</span>
+                          <div className="text-right">
+                            <span className="text-lg font-bold text-blue-600">{service.price}</span>
+                            {service.hardware_included && (
+                              <div className="text-xs text-green-700 mt-1">
+                                *Hardware included in price
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Description */}
+                      <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                        {service.description}
+                      </p>
+
+                      {/* Who this is for */}
+                      <div className="mb-4">
+                        <h5 className="font-semibold text-gray-900 mb-2 text-sm">Who this is for:</h5>
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          {service.who_for}
+                        </p>
+                      </div>
+
+                      {/* What's Included */}
+                      <div className="mb-4">
+                        <h5 className="font-semibold text-gray-900 mb-2 text-sm">What's Included:</h5>
+                        <ul className="space-y-1.5">
+                          {service.features.map((feature, idx) => (
+                            <li key={idx} className="flex items-start text-sm text-gray-600">
+                              <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2 mt-1.5 flex-shrink-0"></span>
+                              <span>{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Disclaimer */}
+                      {service.disclaimer && (
+                        <div className="bg-amber-50 p-3 rounded-lg border border-amber-200 mb-4">
+                          <p className="text-xs text-gray-700 leading-relaxed">
+                            <strong>Note:</strong> {service.disclaimer}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Buttons */}
+                      <div className="space-y-2">
+                        <button
+                          onClick={scrollToContact}
+                          className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-sm"
+                        >
+                          Request Quote
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleService(service.id);
+                          }}
+                          className="w-full flex items-center justify-center gap-2 text-blue-600 hover:text-blue-800 font-medium py-2 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors text-sm"
+                        >
+                          <span>View Less</span>
+                          <FaChevronUp className="text-xs" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
-
-                <div className="mb-6">
-                  <h5 className="font-semibold text-gray-900 mb-3">What's Included:</h5>
-                  <ul className="space-y-2">
-                    {service.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start text-sm text-gray-600">
-                        <span className="w-2 h-2 bg-blue-600 rounded-full mr-3 mt-1.5 flex-shrink-0"></span>
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {service.disclaimer && (
-                  <div className="mb-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
-                    <p className="text-xs text-gray-700 leading-relaxed">
-                      <strong>Note:</strong> {service.disclaimer}
-                    </p>
-                  </div>
-                )}
-
-                <div className="border-t pt-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-2xl font-bold text-blue-600">{service.price}</span>
-                  </div>
-                  <button
-                    onClick={scrollToContact}
-                    className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-                  >
-                    Request Quote
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+              );
+            })}
+            </div>
+          )}
         </div>
 
         {/* Monthly Services */}
         <div className="mb-16">
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold text-gray-900 mb-4">
-              Ongoing & Monthly Services
+              Ongoing Support
             </h3>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              These services are optional recurring offerings designed to keep your systems
-              visible, secure, and performing well over time.
+              Monthly maintenance and optimization to keep your systems secure and performing well.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {monthlyServices.map((service, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 border border-gray-100"
-              >
-                <div className="mb-6">{service.icon}</div>
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-blue-600"></div>
+              <p className="mt-4 text-gray-600">Loading services...</p>
+            </div>
+          ) : monthlyServices.length === 0 ? (
+            <div className="text-center py-12 bg-gray-50 rounded-lg">
+              <p className="text-gray-600">No monthly services available at this time.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {monthlyServices.map((service) => {
+              const isExpanded = expandedServices.has(service.id);
 
-                <h4 className="text-2xl font-bold text-gray-900 mb-4">
-                  {service.title}
-                </h4>
+              return (
+                <div
+                  key={service.id}
+                  className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 cursor-pointer"
+                  onClick={() => !isExpanded && toggleService(service.id)}
+                >
+                  {!isExpanded ? (
+                    /* Collapsed - Ultra Compact Card View */
+                    <div className="p-4">
+                      {/* Icon */}
+                      <div className="flex justify-center mb-3">
+                        {getServiceIcon(service.title)}
+                      </div>
 
-                <p className="text-gray-600 mb-6 leading-relaxed">
-                  {service.description}
-                </p>
+                      {/* Title */}
+                      <h4 className="text-base font-bold text-gray-900 mb-2 text-center leading-tight">
+                        {service.title}
+                      </h4>
 
-                <div className="mb-6">
-                  <h5 className="font-semibold text-gray-900 mb-2">Who this is for:</h5>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    {service.whoFor}
-                  </p>
+                      {/* Price */}
+                      <div className="text-center mb-3">
+                        <span className="text-lg font-bold text-blue-600">{service.price}</span>
+                      </div>
+
+                      {/* View Details Button */}
+                      <button
+                        className="w-full flex items-center justify-center gap-1 text-blue-600 hover:text-blue-800 font-medium py-1.5 text-xs"
+                      >
+                        <span>View Details</span>
+                        <FaChevronDown className="text-xs" />
+                      </button>
+                    </div>
+                  ) : (
+                    /* Expanded - Full Details View */
+                    <div className="p-6">
+                      {/* Title */}
+                      <h4 className="text-xl font-bold text-gray-900 mb-4 text-center">
+                        {service.title}
+                      </h4>
+
+                      {/* Pricing */}
+                      <div className="bg-blue-50 p-3 rounded-lg border border-blue-200 mb-4">
+                        <div className="flex justify-between items-center">
+                          <span className="font-semibold text-gray-900 text-sm">Price Estimate:</span>
+                          <div className="text-right">
+                            <span className="text-lg font-bold text-blue-600">{service.price}</span>
+                            {service.hardware_included && (
+                              <div className="text-xs text-green-700 mt-1">
+                                *Hardware included in price
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Description */}
+                      <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                        {service.description}
+                      </p>
+
+                      {/* Who this is for */}
+                      <div className="mb-4">
+                        <h5 className="font-semibold text-gray-900 mb-2 text-sm">Who this is for:</h5>
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          {service.who_for}
+                        </p>
+                      </div>
+
+                      {/* What's Included */}
+                      <div className="mb-4">
+                        <h5 className="font-semibold text-gray-900 mb-2 text-sm">What's Included:</h5>
+                        <ul className="space-y-1.5">
+                          {service.features.map((feature, idx) => (
+                            <li key={idx} className="flex items-start text-sm text-gray-600">
+                              <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2 mt-1.5 flex-shrink-0"></span>
+                              <span>{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Disclaimer */}
+                      {service.disclaimer && (
+                        <div className="bg-amber-50 p-3 rounded-lg border border-amber-200 mb-4">
+                          <p className="text-xs text-gray-700 leading-relaxed">
+                            <strong>Important Note:</strong> {service.disclaimer}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Buttons */}
+                      <div className="space-y-2">
+                        <button
+                          onClick={scrollToContact}
+                          className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-sm"
+                        >
+                          Learn More
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleService(service.id);
+                          }}
+                          className="w-full flex items-center justify-center gap-2 text-blue-600 hover:text-blue-800 font-medium py-2 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors text-sm"
+                        >
+                          <span>View Less</span>
+                          <FaChevronUp className="text-xs" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
-
-                <div className="mb-6">
-                  <h5 className="font-semibold text-gray-900 mb-3">What's Included:</h5>
-                  <ul className="space-y-2">
-                    {service.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start text-sm text-gray-600">
-                        <span className="w-2 h-2 bg-blue-600 rounded-full mr-3 mt-1.5 flex-shrink-0"></span>
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {service.disclaimer && (
-                  <div className="mb-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
-                    <p className="text-xs text-gray-700 leading-relaxed">
-                      <strong>Important Note:</strong> {service.disclaimer}
-                    </p>
-                  </div>
-                )}
-
-                <div className="border-t pt-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-2xl font-bold text-blue-600">{service.price}</span>
-                  </div>
-                  <button
-                    onClick={scrollToContact}
-                    className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-                  >
-                    Learn More
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* CTA Section */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-700 rounded-2xl p-12 text-center text-white">
-          <h3 className="text-3xl font-bold mb-4">
-            Not Sure Which Service Fits Your Needs?
-          </h3>
-          <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-            Schedule a free discovery call and we'll help you choose the right solution.
-          </p>
-          <div className="flex justify-center gap-4 flex-wrap">
-            <button
-              onClick={scrollToContact}
-              className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-all transform hover:scale-105"
-            >
-              Schedule Free Consultation
-            </button>
-            <button
-              onClick={scrollToProjects}
-              className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-all"
-            >
-              View Portfolio
-            </button>
-          </div>
+              );
+            })}
+            </div>
+          )}
         </div>
       </div>
     </section>

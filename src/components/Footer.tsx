@@ -1,24 +1,83 @@
 import { useState } from 'react';
-import { FaLinkedin, FaInstagram, FaArrowUp, FaEnvelope, FaPhone, FaMapMarkerAlt, FaPaperPlane } from 'react-icons/fa';
+import { useRouter } from 'next/router';
+import { FaLinkedin, FaInstagram, FaArrowUp, FaEnvelope, FaPhone, FaMapMarkerAlt, FaPaperPlane, FaPaperclip, FaTimes } from 'react-icons/fa';
 
 export default function Footer() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
+    company: '',
     message: ''
   });
+  const [files, setFiles] = useState<File[]>([]);
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log('Form submitted:', formData);
-    // Reset form
-    setFormData({ name: '', email: '', message: '' });
-    alert('Thank you for your message! We\'ll get back to you soon.');
+    setStatus('loading');
+    setErrorMessage('');
+
+    try {
+      // First, submit the quote request
+      const response = await fetch('/api/quote-request', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // If there are files and we got a projectId, upload them
+        if (files.length > 0 && data.projectId) {
+          for (const file of files) {
+            const fileFormData = new FormData();
+            fileFormData.append('file', file);
+            fileFormData.append('projectId', data.projectId.toString());
+
+            await fetch('/api/files/upload', {
+              method: 'POST',
+              body: fileFormData,
+            });
+          }
+        }
+
+        // Redirect to thank you page
+        router.push('/request-received');
+      } else {
+        setStatus('error');
+        setErrorMessage(data.error || 'Something went wrong. Please try emailing us directly at citylife32@outlook.com');
+      }
+    } catch (error) {
+      setStatus('error');
+      setErrorMessage('Network error. Please try emailing us directly at citylife32@outlook.com');
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      // Limit to 5 files
+      if (files.length + newFiles.length > 5) {
+        setErrorMessage('Maximum 5 files allowed');
+        return;
+      }
+      setFiles([...files, ...newFiles]);
+      setErrorMessage('');
+    }
+  };
+
+  const removeFile = (index: number) => {
+    setFiles(files.filter((_, i) => i !== index));
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -33,10 +92,9 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Let's Build Something Amazing</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">Get a Free Quote</h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Ready to transform your business with custom IT solutions? 
-            Get in touch for a free consultation and project quote.
+            Tell us about your project. We'll respond within 24 hours with a detailed proposal and transparent pricing.
           </p>
         </div>
 
@@ -44,63 +102,179 @@ export default function Footer() {
           {/* Contact Form */}
           <div>
             <h3 className="text-2xl font-bold mb-6">Send Us a Message</h3>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white"
-                  placeholder="Your full name"
-                />
+            {status === 'success' ? (
+              <div className="text-center py-12 bg-gray-800 rounded-lg">
+                <div className="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <FaPaperPlane className="text-white text-3xl" />
+                </div>
+                <h3 className="text-2xl font-bold mb-4">
+                  Quote Request Received!
+                </h3>
+                <p className="text-gray-300 mb-8">
+                  We'll respond within 24 hours with a detailed proposal.
+                </p>
+                <button
+                  onClick={() => setStatus('idle')}
+                  className="text-blue-400 hover:text-blue-300 font-semibold"
+                >
+                  Send Another Request
+                </button>
               </div>
-              
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                  Email Address *
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white"
-                  placeholder="your@email.com"
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
-                  Project Details *
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  rows={5}
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white resize-vertical"
-                  placeholder="Tell us about your project, timeline, and budget..."
-                />
-              </div>
-              
-              <button
-                type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105 flex items-center justify-center gap-2"
-              >
-                <FaPaperPlane />
-                Send Message
-              </button>
-            </form>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
+                    Full Name <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400"
+                    placeholder="John Doe"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+                    Email <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400"
+                    placeholder="john@example.com"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">
+                    Phone <span className="text-gray-400 text-xs">(Optional)</span>
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400"
+                    placeholder="(720) 555-0123"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="company" className="block text-sm font-medium text-gray-300 mb-2">
+                    Company/Business <span className="text-gray-400 text-xs">(Optional)</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="company"
+                    name="company"
+                    value={formData.company}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400"
+                    placeholder="Your Company Name"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
+                    Project Details <span className="text-red-400">*</span>
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                    rows={5}
+                    className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400 resize-none"
+                    placeholder="Tell us about your project... What are you looking to build? What problems are you trying to solve?"
+                  />
+                </div>
+
+                {/* File Upload */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Attach Files <span className="text-gray-400 text-xs">(Optional - PDF, DOC, images, max 5 files)</span>
+                  </label>
+                  <div className="space-y-3">
+                    <label className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-700 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-gray-800 transition-all">
+                      <FaPaperclip className="mr-2 text-gray-400" />
+                      <span className="text-gray-300">Click to attach files</span>
+                      <input
+                        type="file"
+                        multiple
+                        accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg,.gif"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                    </label>
+
+                    {files.length > 0 && (
+                      <div className="space-y-2">
+                        {files.map((file, index) => (
+                          <div key={index} className="flex items-center justify-between bg-gray-800 px-3 py-2 rounded-lg">
+                            <div className="flex items-center">
+                              <FaPaperclip className="text-gray-400 mr-2 text-sm" />
+                              <span className="text-sm text-gray-200">{file.name}</span>
+                              <span className="text-xs text-gray-400 ml-2">
+                                ({(file.size / 1024).toFixed(1)} KB)
+                              </span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => removeFile(index)}
+                              className="text-red-400 hover:text-red-300 p-1"
+                            >
+                              <FaTimes />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {status === 'error' && (
+                  <div className="bg-red-900/50 border border-red-700 rounded-lg p-4">
+                    <p className="text-red-300 text-sm">{errorMessage}</p>
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={status === 'loading'}
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
+                >
+                  {status === 'loading' ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <FaPaperPlane />
+                      Send Quote Request
+                    </>
+                  )}
+                </button>
+
+                <p className="text-sm text-gray-400 text-center">
+                  We respect your privacy. Your information will never be shared.
+                </p>
+              </form>
+            )}
           </div>
 
           {/* Contact Information */}

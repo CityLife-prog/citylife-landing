@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/context/AuthContext';
 import Head from 'next/head';
@@ -19,7 +19,10 @@ import {
   FaBell,
   FaCheck,
   FaStar,
-  FaUserCircle
+  FaRegStar,
+  FaUserCircle,
+  FaCogs,
+  FaUpload
 } from 'react-icons/fa';
 import MessageBoard from '@/components/MessageBoard';
 import FileUpload from '@/components/FileUpload';
@@ -31,14 +34,16 @@ interface Project {
   client: string;
   client_id?: string;
   description?: string;
-  technologies?: string;
-  key_results?: string;
+  technologies?: string | string[];
+  key_results?: string | string[];
   live_url?: string;
   category?: string;
   status: 'quote' | 'planning' | 'in-progress' | 'completed' | 'on-hold';
   budget: number;
   timeline: string;
   progress: number;
+  updated_at?: string;
+  created_at?: string;
 }
 
 interface Client {
@@ -66,6 +71,7 @@ interface ClientContact {
 
 interface Review {
   id: string;
+  project_id: string;
   client_name: string;
   client_title: string;
   client_company: string;
@@ -111,6 +117,12 @@ export default function AdminDashboard() {
   const [editingClient, setEditingClient] = useState<Client | null>(null);
   const [viewingClient, setViewingClient] = useState<Client | null>(null);
   const [clientContacts, setClientContacts] = useState<ClientContact[]>([]);
+
+  // Projects tab state
+  const [expandedProjects, setExpandedProjects] = useState<Set<string>>(new Set());
+  const [projectSearch, setProjectSearch] = useState('');
+  const [projectFilter, setProjectFilter] = useState<'all' | 'quote' | 'planning' | 'in-progress' | 'completed' | 'on-hold'>('all');
+  const [projectSort, setProjectSort] = useState<'name' | 'client' | 'budget' | 'progress' | 'updated'>('updated');
 
   // Fetch data from database
   useEffect(() => {
@@ -534,6 +546,7 @@ export default function AdminDashboard() {
           rating: updatedReview.rating,
           review_text: updatedReview.review_text,
           project_name: updatedReview.project_name,
+          project_id: updatedReview.project_id,
           image_url: updatedReview.image_url,
           is_active: updatedReview.is_active ? 1 : 0,
           sort_order: updatedReview.sort_order
@@ -746,7 +759,7 @@ export default function AdminDashboard() {
           {/* Navigation Tabs */}
           <div className="border-b border-gray-200 mb-8">
             <nav className="-mb-px flex space-x-8">
-              {['overview', 'projects', 'clients', 'reviews', 'messages'].map((tab) => (
+              {['overview', 'projects', 'clients', 'reviews', 'services', 'messages'].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -767,7 +780,19 @@ export default function AdminDashboard() {
             <div className="space-y-8">
               {/* Stats Grid */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-white rounded-lg shadow p-6">
+                <div className="bg-white rounded-lg shadow p-6 cursor-pointer hover:shadow-lg transition" onClick={() => setActiveTab('clients')}>
+                  <div className="flex items-center">
+                    <div className="p-2 bg-purple-100 rounded-lg">
+                      <FaUsers className="h-6 w-6 text-purple-600" />
+                    </div>
+                    <div className="ml-4">
+                      <p className="text-sm font-medium text-gray-600">Total Clients</p>
+                      <p className="text-2xl font-semibold text-gray-900">{clients.length}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg shadow p-6 cursor-pointer hover:shadow-lg transition" onClick={() => setActiveTab('projects')}>
                   <div className="flex items-center">
                     <div className="p-2 bg-blue-100 rounded-lg">
                       <FaProjectDiagram className="h-6 w-6 text-blue-600" />
@@ -775,6 +800,18 @@ export default function AdminDashboard() {
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-600">Total Projects</p>
                       <p className="text-2xl font-semibold text-gray-900">{projects.length}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg shadow p-6 cursor-pointer hover:shadow-lg transition" onClick={() => setActiveTab('reviews')}>
+                  <div className="flex items-center">
+                    <div className="p-2 bg-yellow-100 rounded-lg">
+                      <FaStar className="h-6 w-6 text-yellow-600" />
+                    </div>
+                    <div className="ml-4">
+                      <p className="text-sm font-medium text-gray-600">Total Reviews</p>
+                      <p className="text-2xl font-semibold text-gray-900">{reviews.length}</p>
                     </div>
                   </div>
                 </div>
@@ -787,30 +824,6 @@ export default function AdminDashboard() {
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-600">Total Revenue</p>
                       <p className="text-2xl font-semibold text-gray-900">${totalRevenue.toLocaleString()}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-lg shadow p-6">
-                  <div className="flex items-center">
-                    <div className="p-2 bg-yellow-100 rounded-lg">
-                      <FaProjectDiagram className="h-6 w-6 text-yellow-600" />
-                    </div>
-                    <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-600">Active Projects</p>
-                      <p className="text-2xl font-semibold text-gray-900">{activeProjects}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-lg shadow p-6">
-                  <div className="flex items-center">
-                    <div className="p-2 bg-purple-100 rounded-lg">
-                      <FaUsers className="h-6 w-6 text-purple-600" />
-                    </div>
-                    <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-600">Total Clients</p>
-                      <p className="text-2xl font-semibold text-gray-900">{clients.length}</p>
                     </div>
                   </div>
                 </div>
@@ -951,6 +964,57 @@ export default function AdminDashboard() {
                 </button>
               </div>
 
+              {/* Search, Filter, Sort Controls */}
+              <div className="bg-white rounded-lg shadow p-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Search */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                    <input
+                      type="text"
+                      value={projectSearch}
+                      onChange={(e) => setProjectSearch(e.target.value)}
+                      placeholder="Search by name or client..."
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                    />
+                  </div>
+
+                  {/* Filter by Status */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Filter by Status</label>
+                    <select
+                      value={projectFilter}
+                      onChange={(e) => setProjectFilter(e.target.value as any)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                    >
+                      <option value="all">All Statuses</option>
+                      <option value="quote">Quote</option>
+                      <option value="planning">Planning</option>
+                      <option value="in-progress">In Progress</option>
+                      <option value="completed">Completed</option>
+                      <option value="on-hold">On Hold</option>
+                    </select>
+                  </div>
+
+                  {/* Sort */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
+                    <select
+                      value={projectSort}
+                      onChange={(e) => setProjectSort(e.target.value as any)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                    >
+                      <option value="updated">Last Updated</option>
+                      <option value="name">Project Name</option>
+                      <option value="client">Client Name</option>
+                      <option value="budget">Budget</option>
+                      <option value="progress">Progress</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Projects Table */}
               <div className="bg-white rounded-lg shadow overflow-hidden">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
@@ -959,65 +1023,213 @@ export default function AdminDashboard() {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Budget</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Spent</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {projects.map((project) => (
-                      <tr
-                        key={project.id}
-                        onClick={() => handleViewProject(project.id)}
-                        className="hover:bg-gray-50 cursor-pointer transition"
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div>
-                            <div className="text-sm font-medium text-gray-900">{project.name}</div>
-                            <div className="text-sm text-gray-500">{project.timeline}</div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{project.client}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(project.status)}`}>
-                            {project.status.replace('-', ' ')}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${project.budget.toLocaleString()}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div
-                              className="bg-blue-600 h-2 rounded-full"
-                              style={{ width: `${project.progress}%` }}
-                            ></div>
-                          </div>
-                          <span className="text-xs text-gray-600">{project.progress}%</span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex items-center space-x-3">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleViewProject(project.id);
-                              }}
-                              className="text-blue-600 hover:text-blue-900"
-                              title="View Details"
-                            >
-                              <FaEye />
-                            </button>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleAddReviewFromProject(project.id);
-                              }}
-                              className="text-yellow-600 hover:text-yellow-900"
-                              title="Add Review"
-                            >
-                              <FaStar />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                    {projects
+                      .filter((project) => {
+                        // Filter by status
+                        if (projectFilter !== 'all' && project.status !== projectFilter) {
+                          return false;
+                        }
+                        // Search by name or client
+                        if (projectSearch) {
+                          const searchLower = projectSearch.toLowerCase();
+                          return (
+                            project.name.toLowerCase().includes(searchLower) ||
+                            project.client.toLowerCase().includes(searchLower)
+                          );
+                        }
+                        return true;
+                      })
+                      .sort((a, b) => {
+                        // Sort logic
+                        switch (projectSort) {
+                          case 'name':
+                            return a.name.localeCompare(b.name);
+                          case 'client':
+                            return a.client.localeCompare(b.client);
+                          case 'budget':
+                            return b.budget - a.budget;
+                          case 'progress':
+                            return b.progress - a.progress;
+                          case 'updated':
+                          default:
+                            return new Date(b.updated_at || 0).getTime() - new Date(a.updated_at || 0).getTime();
+                        }
+                      })
+                      .map((project) => {
+                        const isExpanded = expandedProjects.has(project.id.toString());
+                        return (
+                          <React.Fragment key={project.id}>
+                            <tr className="hover:bg-gray-50 transition">
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div>
+                                  <div className="text-sm font-medium text-gray-900">{project.name}</div>
+                                  <div className="text-sm text-gray-500">{project.timeline}</div>
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{project.client}</td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(project.status)}`}>
+                                  {project.status.replace('-', ' ')}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${project.budget.toLocaleString()}</td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${((project as any).total_spent || 0).toLocaleString()}</td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="w-full bg-gray-200 rounded-full h-2">
+                                  <div
+                                    className="bg-blue-600 h-2 rounded-full"
+                                    style={{ width: `${project.progress}%` }}
+                                  ></div>
+                                </div>
+                                <span className="text-xs text-gray-600">{project.progress}%</span>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div className="flex items-center space-x-2">
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      const newExpanded = new Set(expandedProjects);
+                                      if (isExpanded) {
+                                        newExpanded.delete(project.id.toString());
+                                      } else {
+                                        newExpanded.add(project.id.toString());
+                                      }
+                                      setExpandedProjects(newExpanded);
+                                    }}
+                                    className="text-blue-600 hover:text-blue-900"
+                                    title={isExpanded ? "View Less" : "View More"}
+                                  >
+                                    <FaEye />
+                                  </button>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleAddReviewFromProject(project.id);
+                                    }}
+                                    className="text-yellow-600 hover:text-yellow-900"
+                                    title="Write a Review"
+                                  >
+                                    {reviews.some(r => r.project_id === project.id) ? <FaStar /> : <FaRegStar />}
+                                  </button>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleViewProject(project.id);
+                                    }}
+                                    className="text-green-600 hover:text-green-900"
+                                    title="Upload Files"
+                                  >
+                                    <FaUpload />
+                                  </button>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setEditingProject(project);
+                                    }}
+                                    className="text-gray-600 hover:text-gray-900"
+                                    title="Edit Project"
+                                  >
+                                    <FaEdit />
+                                  </button>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      if (confirm(`Are you sure you want to delete "${project.name}"?`)) {
+                                        handleDeleteProject(project.id);
+                                      }
+                                    }}
+                                    className="text-red-600 hover:text-red-900"
+                                    title="Delete Project"
+                                  >
+                                    <FaTrash />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            {isExpanded && (
+                              <tr>
+                                <td colSpan={7} className="px-6 py-4 bg-gray-50">
+                                  <div className="space-y-3">
+                                    {(project.description || project.category) && (
+                                      <div className="grid grid-cols-2 gap-4">
+                                        {project.description && (
+                                          <div>
+                                            <p className="text-sm font-medium text-gray-700">Description</p>
+                                            <p className="text-sm text-gray-600">{project.description}</p>
+                                          </div>
+                                        )}
+                                        {project.category && (
+                                          <div>
+                                            <p className="text-sm font-medium text-gray-700">Category</p>
+                                            <p className="text-sm text-gray-600">{project.category}</p>
+                                          </div>
+                                        )}
+                                      </div>
+                                    )}
+                                    {project.technologies && (
+                                      <div>
+                                        <p className="text-sm font-medium text-gray-700">Technologies Used:</p>
+                                        <div className="flex flex-wrap gap-2 mt-1">
+                                          {(typeof project.technologies === 'string'
+                                            ? project.technologies.split('\n').map(t => t.trim()).filter(Boolean)
+                                            : Array.isArray(project.technologies)
+                                            ? project.technologies
+                                            : [project.technologies]
+                                          ).map((tech: string, index: number) => (
+                                            <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                                              {tech}
+                                            </span>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    )}
+                                    {project.key_results && (
+                                      <div>
+                                        <p className="text-sm font-medium text-gray-700">Key Results:</p>
+                                        <ul className="space-y-2 mt-1">
+                                          {(typeof project.key_results === 'string'
+                                            ? project.key_results.split('\n').map(r => r.trim()).filter(Boolean)
+                                            : Array.isArray(project.key_results)
+                                            ? project.key_results
+                                            : [project.key_results]
+                                          ).map((result: string, index: number) => (
+                                            <li key={index} className="flex items-start text-sm text-gray-600">
+                                              <span className="w-2 h-2 bg-green-500 rounded-full mr-3 mt-1.5 flex-shrink-0"></span>
+                                              {result}
+                                            </li>
+                                          ))}
+                                        </ul>
+                                      </div>
+                                    )}
+                                    {project.live_url && (
+                                      <div>
+                                        <p className="text-sm font-medium text-gray-700">Live URL</p>
+                                        <a
+                                          href={project.live_url}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-sm text-blue-600 hover:underline"
+                                        >
+                                          {project.live_url}
+                                        </a>
+                                      </div>
+                                    )}
+                                    {!project.description && !project.category && !project.technologies && !project.key_results && !project.live_url && (
+                                      <p className="text-sm text-gray-500 italic">No additional details available. Click Edit to add project information.</p>
+                                    )}
+                                  </div>
+                                </td>
+                              </tr>
+                            )}
+                          </React.Fragment>
+                        );
+                      })}
                   </tbody>
                 </table>
               </div>
@@ -1038,64 +1250,69 @@ export default function AdminDashboard() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {clients.map((client) => (
-                  <div key={client.id} className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow cursor-pointer group">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3
-                        onClick={() => handleViewClient(client.id)}
-                        className="text-lg font-medium text-gray-900 hover:text-blue-600 cursor-pointer"
-                      >
-                        {client.name}
-                      </h3>
-                      <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setEditingClient(client);
-                          }}
-                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
-                          title="Edit Client"
-                        >
-                          <FaEdit />
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteClient(client.id);
-                          }}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
-                          title="Delete Client"
-                        >
-                          <FaTrash />
-                        </button>
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <p className="text-sm text-gray-600">
-                        <FaEnvelope className="inline mr-2" />
-                        {client.email}
-                      </p>
-                      <p className="text-sm text-gray-600">{client.company}</p>
-                      {client.phone && (
-                        <p className="text-sm text-gray-600">📞 {client.phone}</p>
-                      )}
-                      {client.website && (
-                        <p className="text-sm text-blue-600 truncate">🌐 {client.website}</p>
-                      )}
-                      <div className="flex justify-between pt-4 border-t border-gray-200">
-                        <div>
-                          <p className="text-xs text-gray-500">Projects</p>
-                          <p className="text-lg font-semibold text-gray-900">{client.projects}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500">Total Spent</p>
-                          <p className="text-lg font-semibold text-gray-900">${client.totalSpent.toLocaleString()}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+              {/* Excel-Style Table */}
+              <div className="bg-white rounded-lg shadow overflow-hidden">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Projects</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Spent</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {clients.map((client) => (
+                      <tr key={client.id} className="hover:bg-gray-50 transition">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <button
+                            onClick={() => handleViewClient(client.id)}
+                            className="text-sm font-medium text-blue-600 hover:text-blue-900 hover:underline"
+                          >
+                            {client.name}
+                          </button>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{client.email}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{client.company || '-'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{client.phone || '-'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{client.projects}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">${client.totalSpent.toLocaleString()}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex items-center space-x-2">
+                            <button
+                              onClick={() => handleViewClient(client.id)}
+                              className="text-blue-600 hover:text-blue-900"
+                              title="View Details"
+                            >
+                              <FaEye />
+                            </button>
+                            <button
+                              onClick={() => setEditingClient(client)}
+                              className="text-gray-600 hover:text-gray-900"
+                              title="Edit Client"
+                            >
+                              <FaEdit />
+                            </button>
+                            <button
+                              onClick={() => {
+                                if (confirm(`Are you sure you want to delete ${client.name}?`)) {
+                                  handleDeleteClient(client.id);
+                                }
+                              }}
+                              className="text-red-600 hover:text-red-900"
+                              title="Delete Client"
+                            >
+                              <FaTrash />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           )}
@@ -1217,6 +1434,45 @@ export default function AdminDashboard() {
               </div>
             </div>
           )}
+
+          {/* Services Tab */}
+          {activeTab === 'services' && (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-bold text-gray-900">Service Management</h2>
+                <a
+                  href="/admin/services"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-medium flex items-center gap-2"
+                >
+                  <FaCogs className="h-4 w-4" />
+                  Manage Services
+                </a>
+              </div>
+
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <p className="text-gray-600 mb-4">
+                  Click "Manage Services" above to access the full service management interface where you can:
+                </p>
+                <ul className="text-sm text-gray-700 space-y-2 list-disc list-inside">
+                  <li>Add new project-based or monthly services</li>
+                  <li>Edit service details, pricing, and features</li>
+                  <li>Control which services are visible on the public website</li>
+                  <li>Reorder services by priority</li>
+                  <li>Add hardware inclusion flags and disclaimers</li>
+                </ul>
+              </div>
+
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h3 className="font-semibold text-blue-900 mb-2">💡 Service Tips</h3>
+                <ul className="text-sm text-blue-800 space-y-1">
+                  <li>• Services are automatically displayed on your homepage</li>
+                  <li>• Inactive services are hidden from public view but remain in your database</li>
+                  <li>• Use sort_order to control the display sequence</li>
+                  <li>• Featured services appear first in each category</li>
+                </ul>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -1296,6 +1552,10 @@ export default function AdminDashboard() {
                       <span className="text-sm font-semibold text-gray-900">${viewingProject.budget.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Total Spent:</span>
+                      <span className="text-sm font-semibold text-gray-900">${((viewingProject as any).total_spent || 0).toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
                       <span className="text-sm text-gray-600">Timeline:</span>
                       <span className="text-sm font-semibold text-gray-900">{viewingProject.timeline}</span>
                     </div>
@@ -1353,6 +1613,76 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
+              {/* Landing Page Display Fields */}
+              <div className="bg-gray-50 rounded-lg p-6">
+                <h4 className="text-lg font-semibold text-gray-900 mb-4">Landing Page Display</h4>
+                <div className="space-y-4">
+                  {viewingProject.display_title && (
+                    <div>
+                      <span className="text-sm font-semibold text-gray-600">Display Title:</span>
+                      <p className="text-sm text-gray-900 mt-1">{viewingProject.display_title}</p>
+                    </div>
+                  )}
+                  {viewingProject.category && (
+                    <div>
+                      <span className="text-sm font-semibold text-gray-600">Category:</span>
+                      <p className="text-sm text-gray-900 mt-1">{viewingProject.category}</p>
+                    </div>
+                  )}
+                  {viewingProject.description && (
+                    <div>
+                      <span className="text-sm font-semibold text-gray-600">Description:</span>
+                      <p className="text-sm text-gray-900 mt-1">{viewingProject.description}</p>
+                    </div>
+                  )}
+                  {viewingProject.technologies && (
+                    <div>
+                      <span className="text-sm font-semibold text-gray-600">Technologies:</span>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {(Array.isArray(viewingProject.technologies)
+                          ? viewingProject.technologies
+                          : viewingProject.technologies.split('\n').filter(Boolean)
+                        ).map((tech: string, idx: number) => (
+                          <span key={idx} className="px-3 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                            {tech.trim()}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {viewingProject.key_results && (
+                    <div>
+                      <span className="text-sm font-semibold text-gray-600">Key Results:</span>
+                      <ul className="list-disc list-inside text-sm text-gray-900 mt-2 space-y-1">
+                        {(Array.isArray(viewingProject.key_results)
+                          ? viewingProject.key_results
+                          : viewingProject.key_results.split('\n').filter(Boolean)
+                        ).map((result: string, idx: number) => (
+                          <li key={idx}>{result.trim()}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {viewingProject.live_url && (
+                    <div>
+                      <span className="text-sm font-semibold text-gray-600">Live Website:</span>
+                      <a
+                        href={viewingProject.live_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 hover:underline mt-1 block"
+                      >
+                        {viewingProject.live_url}
+                      </a>
+                    </div>
+                  )}
+                  {!viewingProject.display_title && !viewingProject.category && !viewingProject.description &&
+                   !viewingProject.technologies && !viewingProject.key_results && !viewingProject.live_url && (
+                    <p className="text-sm text-gray-500">No landing page display fields set. Edit project to add them.</p>
+                  )}
+                </div>
+              </div>
+
               {/* File Management */}
               <div className="bg-white border border-gray-200 rounded-lg p-6">
                 <h4 className="text-lg font-semibold text-gray-900 mb-4">Project Files</h4>
@@ -1400,6 +1730,7 @@ export default function AdminDashboard() {
             <ReviewCreateForm
               clients={clients}
               projects={projects}
+              initialData={reviewInitialData}
               onSave={handleCreateReview}
               onCancel={() => setShowCreateReviewModal(false)}
             />
@@ -1422,6 +1753,7 @@ export default function AdminDashboard() {
             </div>
             <ReviewEditForm
               review={editingReview}
+              projects={projects}
               onSave={handleUpdateReview}
               onCancel={() => setEditingReview(null)}
             />
@@ -1487,6 +1819,7 @@ function ProjectCreateForm({ clients, onSave, onCancel }: {
     client_id: '',
     status: 'planning' as const,
     budget: '' as any,
+    totalSpent: '' as any,
     timeline: '4 weeks',
     progress: 0,
     description: ''
@@ -1501,6 +1834,7 @@ function ProjectCreateForm({ clients, onSave, onCancel }: {
     onSave({
       ...formData,
       budget: parseInt(formData.budget) || 0,
+      totalSpent: parseInt(formData.totalSpent) || 0,
       client: selectedClient ? selectedClient.name : formData.client,
       client_id: formData.client_id || undefined
     });
@@ -1573,6 +1907,20 @@ function ProjectCreateForm({ clients, onSave, onCancel }: {
             min="0"
             placeholder="5000"
           />
+          <p className="text-xs text-gray-500 mt-1">Estimated/quoted amount</p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Total Spent ($)</label>
+          <input
+            type="number"
+            value={formData.totalSpent}
+            onChange={(e) => setFormData(prev => ({ ...prev, totalSpent: e.target.value as any }))}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+            min="0"
+            placeholder="0"
+          />
+          <p className="text-xs text-gray-500 mt-1">Actual amount spent so far</p>
         </div>
 
         <div>
@@ -1712,12 +2060,26 @@ function ProjectEditForm({ project, clients, onSave, onCancel }: {
           <label className="block text-sm font-medium text-gray-700 mb-1">Budget ($)</label>
           <input
             type="number"
-            value={formData.budget}
-            onChange={(e) => setFormData(prev => ({ ...prev, budget: parseInt(e.target.value) }))}
+            value={formData.budget || ''}
+            onChange={(e) => setFormData(prev => ({ ...prev, budget: e.target.value ? parseInt(e.target.value) : 0 }))}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
             required
             min="0"
           />
+          <p className="text-xs text-gray-500 mt-1">Quoted/estimated amount</p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Total Spent ($)</label>
+          <input
+            type="number"
+            value={(formData as any).total_spent ?? ''}
+            onChange={(e) => setFormData(prev => ({ ...prev, total_spent: e.target.value ? parseInt(e.target.value) : undefined } as any))}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+            min="0"
+            placeholder="Optional"
+          />
+          <p className="text-xs text-gray-500 mt-1">Actual amount spent so far (optional)</p>
         </div>
 
         <div>
@@ -1856,9 +2218,10 @@ function ProjectEditForm({ project, clients, onSave, onCancel }: {
 }
 
 // Review Create Form Component
-function ReviewCreateForm({ clients, projects, onSave, onCancel }: {
+function ReviewCreateForm({ clients, projects, initialData, onSave, onCancel }: {
   clients: Client[];
   projects: Project[];
+  initialData?: { project?: Project; client?: Client } | null;
   onSave: (data: any) => void;
   onCancel: () => void;
 }) {
@@ -1869,6 +2232,7 @@ function ReviewCreateForm({ clients, projects, onSave, onCancel }: {
     rating: 5,
     review_text: '',
     project_name: '',
+    project_id: null as string | null,
     image_url: '/api/placeholder/80/80',
     is_active: true,
     sort_order: 0
@@ -1879,6 +2243,35 @@ function ReviewCreateForm({ clients, projects, onSave, onCancel }: {
   const [showClientDropdown, setShowClientDropdown] = useState(false);
   const [clientSearchTerm, setClientSearchTerm] = useState('');
   const [customProjectName, setCustomProjectName] = useState('');
+
+  // Initialize form with initialData when provided
+  useEffect(() => {
+    if (initialData) {
+      if (initialData.client) {
+        setSelectedClient(initialData.client);
+        setClientSearchTerm(initialData.client.name);
+        setFormData(prev => ({
+          ...prev,
+          client_name: initialData.client!.name,
+          client_company: initialData.client!.company || ''
+        }));
+
+        // Find all projects for this client
+        const relatedProjects = projects.filter(p =>
+          p.client_id === initialData.client!.id.toString() || p.client === initialData.client!.name
+        );
+        setClientProjects(relatedProjects);
+      }
+
+      if (initialData.project) {
+        setFormData(prev => ({
+          ...prev,
+          project_name: initialData.project!.name,
+          project_id: initialData.project!.id
+        }));
+      }
+    }
+  }, [initialData, projects]);
 
   // Filter clients based on search term
   const filteredClients = clients.filter(client =>
@@ -2013,19 +2406,24 @@ function ReviewCreateForm({ clients, projects, onSave, onCancel }: {
           {clientProjects.length > 0 ? (
             <>
               <select
-                value={formData.project_name === customProjectName ? '__custom__' : formData.project_name}
+                value={formData.project_id || ''}
                 onChange={(e) => {
                   if (e.target.value === '__custom__') {
-                    setFormData(prev => ({ ...prev, project_name: customProjectName }));
+                    setFormData(prev => ({ ...prev, project_name: customProjectName, project_id: null }));
+                  } else if (e.target.value === '') {
+                    setFormData(prev => ({ ...prev, project_name: '', project_id: null }));
                   } else {
-                    setFormData(prev => ({ ...prev, project_name: e.target.value }));
+                    const selectedProject = clientProjects.find(p => p.id === e.target.value);
+                    if (selectedProject) {
+                      setFormData(prev => ({ ...prev, project_name: selectedProject.name, project_id: selectedProject.id }));
+                    }
                   }
                 }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
               >
                 <option value="">Select a project...</option>
                 {clientProjects.map((project) => (
-                  <option key={project.id} value={project.name}>
+                  <option key={project.id} value={project.id}>
                     {project.name} ({project.status})
                   </option>
                 ))}
@@ -2128,8 +2526,9 @@ function ReviewCreateForm({ clients, projects, onSave, onCancel }: {
 }
 
 // Review Edit Form Component
-function ReviewEditForm({ review, onSave, onCancel }: {
+function ReviewEditForm({ review, projects, onSave, onCancel }: {
   review: Review;
+  projects: Project[];
   onSave: (review: Review) => void;
   onCancel: () => void;
 }) {
@@ -2177,13 +2576,31 @@ function ReviewEditForm({ review, onSave, onCancel }: {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Project Name</label>
-          <input
-            type="text"
-            value={formData.project_name || ''}
-            onChange={(e) => setFormData(prev => ({ ...prev, project_name: e.target.value }))}
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Project Name
+            <span className="text-xs text-gray-500 ml-1">({projects.length} available)</span>
+          </label>
+          <select
+            value={formData.project_id || ''}
+            onChange={(e) => {
+              if (e.target.value === '') {
+                setFormData(prev => ({ ...prev, project_name: '', project_id: '' }));
+              } else {
+                const selectedProject = projects.find(p => p.id === e.target.value);
+                if (selectedProject) {
+                  setFormData(prev => ({ ...prev, project_name: selectedProject.name, project_id: selectedProject.id }));
+                }
+              }
+            }}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
-          />
+          >
+            <option value="">No project (leave unlinked)</option>
+            {projects.map((project) => (
+              <option key={project.id} value={project.id}>
+                {project.name} ({project.status})
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>
