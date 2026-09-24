@@ -57,7 +57,10 @@ export const products: Product[] = [
     summary:
       'A local business discovery app. You browse nearby places as a deck of cards or on a map, say which ones interest you, and a match forms when the interest is mutual. Reviews earn you stomps, and stomps let you open up areas that nobody has covered yet — so the places that get found are the ones people actually went to.',
     status: 'development',
-    statusNote: 'Web app built; mobile app in progress',
+    // "in progress" overstated the mobile app: it has screens, but it is only
+    // a couple of API calls deep against a far more complete web app, and has
+    // not been committed to since May. "Early development" ages better.
+    statusNote: 'Web app built; mobile app in early development',
     highlights: [
       'Swipe or map-and-list browsing of nearby businesses',
       'Mutual-interest matching between people and places',
