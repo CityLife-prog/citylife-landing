@@ -178,6 +178,24 @@ export default function HomelabPage() {
               inside an ordinary computer case alongside the network switch, the
               drives, and the power monitoring.
             </p>
+
+            {/* PLACEHOLDER — swap for a real photo of the enclosure.
+                Drop the image at public/homelab-lego.jpg and replace this whole
+                <div> with:
+                  <img
+                    src="/homelab-lego.jpg"
+                    alt="The LEGO enclosure holding the main box and the Raspberry Pi"
+                    className="w-full rounded-xl border border-gray-200 mb-6"
+                  />
+                Landscape works best here. A photo with the side panel off, so
+                the standoffs and the airflow path are visible, does more work
+                than the three paragraphs below it. */}
+            <div className="w-full aspect-[16/10] rounded-xl border-2 border-dashed border-gray-300 bg-gray-100 flex flex-col items-center justify-center text-center px-6 mb-6">
+              <p className="text-gray-500 font-medium">Photo of the build goes here</p>
+              <p className="text-gray-400 text-sm mt-1">
+                public/homelab-lego.jpg
+              </p>
+            </div>
             <p className="text-lg text-gray-700 leading-relaxed mb-5">
               It started as something to do and turned into a genuinely useful
               constraint. Plastic is a terrible conductor of heat — about a
