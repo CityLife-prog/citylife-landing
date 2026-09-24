@@ -9,10 +9,10 @@ export default function About() {
         {/* Header */}
         <div className="text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Professional Software Solutions for Your Business
+            A product company that also takes client work
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            CityLyfe is Matthew Kenner—a veteran developer committed to building software that works. No sales teams. No project managers. Just direct communication, honest pricing, and solutions built to last.
+            CityLyfe is Matthew Kenner—a veteran developer committed to building software that works. The products come first; the client work is deliberately kept small so both get done properly. No sales teams. No project managers. Just direct communication and solutions built to last.
           </p>
 
           {/* CTA Button */}
