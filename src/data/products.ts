@@ -40,7 +40,12 @@ export const products: Product[] = [
     summary:
       'A workflow tool for keeping on top of a property: the rooms and areas in it, the appliances, fixtures and systems inside those, and the inspections and maintenance history attached to each one. Photos and documents live alongside the component they belong to, so the record is in one place rather than scattered across a phone and a filing cabinet.',
     status: 'beta',
-    statusNote: 'Free beta opens 3 October 2026',
+    // 3 October is a soft launch to invited testers, not a public opening, and
+    // registration is gated. Do not turn this into a "sign up" CTA — if a
+    // waitlist URL exists, point at that instead. Also note PropKeep is a web
+    // app today: the Capacitor wrapper (org.propkeep.app) is still being built,
+    // so nothing here should imply an iOS app exists.
+    statusNote: 'Invite-only beta from 3 October 2026 — web app',
     href: 'https://propkeep.org',
     highlights: [
       'Properties broken down into areas, rooms and components',
