@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import Hero from '@/components/Hero';
+import ShowcaseCarousel from '@/components/ShowcaseCarousel';
 import About from '@/components/About';
 import Products from '@/components/Products';
 import Services from '@/components/Services';
@@ -59,6 +60,7 @@ export default function Home() {
 
       <main>
         <Hero />
+        <ShowcaseCarousel />
         <About />
         <Products />
         <Services />

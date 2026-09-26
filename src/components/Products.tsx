@@ -1,15 +1,16 @@
 import Link from 'next/link';
 import { FaExternalLinkAlt, FaArrowRight } from 'react-icons/fa';
 import {
-  products,
-  productHref,
+  featuredItems,
+  itemHref,
   isExternal,
   statusLabels,
   statusStyles,
-} from '@/data/products';
+} from '@/data/showcase';
 
 // The products section on the home page. Everything renders from
-// src/data/products.ts, so a fourth or fifth product is a data change only.
+// src/data/showcase.ts (items flagged `featured`), so a fourth or fifth product
+// is a data change only.
 // The grid is intentionally `md:grid-cols-2 lg:grid-cols-3` rather than a fixed
 // three, so a fourth card wraps instead of squashing the row.
 
@@ -28,8 +29,8 @@ export default function Products() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product) => {
-            const href = productHref(product);
+          {featuredItems.map((product) => {
+            const href = itemHref(product);
             const external = isExternal(product);
 
             return (
@@ -52,7 +53,7 @@ export default function Products() {
                 <p className="text-gray-600 mb-4 leading-relaxed">{product.summary}</p>
 
                 <ul className="text-sm text-gray-600 space-y-1.5 mb-5">
-                  {product.highlights.map((highlight) => (
+                  {product.highlights?.map((highlight) => (
                     <li key={highlight} className="flex gap-2">
                       <span aria-hidden="true" className="text-blue-500 mt-0.5">
                         &bull;
@@ -66,7 +67,7 @@ export default function Products() {
                 <div className="mt-auto pt-4 border-t border-gray-100">
                   <p className="text-sm text-gray-500 mb-3">{product.statusNote}</p>
 
-                  {external ? (
+                  {href && external ? (
                     <a
                       href={href}
                       target="_blank"
@@ -76,7 +77,7 @@ export default function Products() {
                       Visit {product.name}
                       <FaExternalLinkAlt size={12} />
                     </a>
-                  ) : product.internalHref ? (
+                  ) : href && product.internalHref ? (
                     <Link
                       href={href}
                       className="inline-flex items-center gap-2 text-blue-600 font-semibold hover:text-blue-800 transition group"

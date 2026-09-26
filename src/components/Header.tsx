@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { FaBars, FaTimes, FaUser, FaChevronDown } from 'react-icons/fa';
-import { products, productHref, isExternal } from '@/data/products';
+import { navItems, itemHref, isExternal } from '@/data/showcase';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -69,7 +69,8 @@ export default function Header() {
         </div>
 
         <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
-          {/* Products dropdown. Renders from src/data/products.ts, so a fourth
+          {/* Products dropdown. Renders from src/data/showcase.ts (items flagged
+              inNav), so a fourth
               or fifth product extends the list rather than crowding the bar. */}
           <div className="relative" ref={productsRef}>
             <button
@@ -87,8 +88,8 @@ export default function Header() {
 
             {isProductsOpen && (
               <div className="absolute left-0 top-8 bg-black border border-gray-800 rounded-lg shadow-xl py-2 w-72 max-h-[70vh] overflow-y-auto">
-                {products.map((product) => {
-                  const href = productHref(product);
+                {navItems.map((product) => {
+                  const href = itemHref(product) ?? `/#${product.id}`;
                   const external = isExternal(product);
                   const className =
                     'block px-4 py-2.5 hover:bg-gray-900 transition';
@@ -144,8 +145,8 @@ export default function Header() {
           {isMenuOpen && (
             <div className="absolute top-10 right-0 bg-black text-white py-3 px-4 rounded shadow-lg z-50 space-y-2 text-sm min-w-56 max-h-[80vh] overflow-y-auto">
               <p className="text-xs uppercase tracking-wide text-gray-500">Products</p>
-              {products.map((product) => {
-                const href = productHref(product);
+              {navItems.map((product) => {
+                const href = itemHref(product) ?? `/#${product.id}`;
                 return isExternal(product) ? (
                   <a
                     key={product.id}
