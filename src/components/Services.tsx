@@ -87,26 +87,26 @@ export default function Services() {
   };
 
   return (
-    <section id="services" className="py-12 px-4 bg-gray-50">
+    <section id="services" className="py-12 px-4 bg-white">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            What We Build
+        <div className="text-center mb-10">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+            Services in full
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Whether it's one-time projects or continued support, we've got you covered.
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            One-time projects or ongoing support.
           </p>
         </div>
 
         {/* Project-Based Services */}
-        <div className="mb-20">
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4">
+        <div className="mb-12">
+          <div className="text-center mb-8">
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">
               One-Time Projects
             </h3>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Fixed-price projects with defined scope and delivery timeline.
+            <p className="text-gray-600">
+              Fixed price, defined scope, a delivery date.
             </p>
           </div>
 
@@ -244,12 +244,12 @@ export default function Services() {
 
         {/* Monthly Services */}
         <div className="mb-16">
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-8">
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">
               Ongoing Support
             </h3>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Monthly maintenance and optimization to keep your systems secure and performing well.
+            <p className="text-gray-600">
+              Monthly maintenance to keep things secure and performing.
             </p>
           </div>
 

@@ -1,10 +1,9 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { FaChevronLeft, FaChevronRight, FaExternalLinkAlt, FaArrowRight } from 'react-icons/fa';
+import { FaChevronLeft, FaChevronRight, FaArrowRight } from 'react-icons/fa';
 import {
   showcaseItems,
-  itemHref,
-  isExternal,
+  detailHref,
   kindLabels,
   statusLabels,
   statusStyles,
@@ -145,8 +144,7 @@ export default function ShowcaseCarousel() {
           onKeyDown={() => setUserEngaged(true)}
         >
           {showcaseItems.map((item, i) => {
-            const href = itemHref(item);
-            const external = isExternal(item);
+            const href = detailHref(item);
 
             return (
               <article
@@ -174,41 +172,13 @@ export default function ShowcaseCarousel() {
                 <div className="mt-auto pt-4 border-t border-gray-100">
                   <p className="text-sm text-gray-500 mb-3">{item.statusNote}</p>
 
-                  {href && external && (
-                    <a
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-blue-600 font-semibold hover:text-blue-800 transition"
-                    >
-                      Visit {item.name}
-                      <FaExternalLinkAlt size={12} />
-                    </a>
-                  )}
-
-                  {href && !external && (
-                    <Link
-                      href={href}
-                      className="inline-flex items-center gap-2 text-blue-600 font-semibold hover:text-blue-800 transition group"
-                    >
-                      How it works
-                      <FaArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                  )}
-
-                  {!href && item.kind === 'service' && (
-                    <Link
-                      href="/#contact"
-                      className="inline-flex items-center gap-2 text-blue-600 font-semibold hover:text-blue-800 transition group"
-                    >
-                      Talk to us
-                      <FaArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                  )}
-
-                  {!href && item.kind !== 'service' && (
-                    <span className="text-sm text-gray-400">Not yet public</span>
-                  )}
+                  <Link
+                    href={href}
+                    className="inline-flex items-center gap-2 text-blue-600 font-semibold hover:text-blue-800 transition group"
+                  >
+                    {item.kind === 'service' ? 'What this covers' : 'Learn more'}
+                    <FaArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                  </Link>
                 </div>
               </article>
             );

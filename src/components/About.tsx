@@ -1,18 +1,20 @@
-import { FaFlag, FaArrowRight } from 'react-icons/fa';
+import { FaArrowRight } from 'react-icons/fa';
 import Link from 'next/link';
 
 export default function About() {
 
   return (
-    <section id="about" className="py-12 px-4 bg-gray-50">
+    <section id="about" className="py-10 px-4 bg-gray-50">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            A product company that also takes client work
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            Who you&apos;re actually dealing with
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            CityLyfe is Matthew Kenner—a veteran developer committed to building software that works. The products come first; the client work is deliberately kept small so both get done properly. No sales teams. No project managers. Just direct communication and solutions built to last.
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
+            CityLyfe is Matthew Kenner—a veteran developer. No sales team, no
+            project manager, no account handler. You talk to the person writing
+            the code.
           </p>
 
           {/* CTA Button */}

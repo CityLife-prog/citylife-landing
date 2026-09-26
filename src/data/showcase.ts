@@ -1,9 +1,9 @@
 // Single source of truth for everything CityLyfe provides or plans to provide.
 //
-// Feeds three things: the top-of-page ShowcaseCarousel (all items), the header
-// Products dropdown (items with `inNav`) and the Products detail section
-// (items with `featured`). Adding a sixth or seventh offering is one entry
-// here — no component changes.
+// Feeds the top-of-page ShowcaseCarousel (all items), the header Products
+// dropdown (items with `inNav`), and a generated detail page at /products/<id>.
+// Adding a seventh offering is one entry here — no component changes, and it
+// gets its own page for free.
 //
 // SOURCING RULE, please keep it: every claim traces to a repo, a document, or
 // the live services API. If you can't source it, flag it rather than writing
@@ -19,6 +19,7 @@
 export type ItemKind = 'app' | 'website' | 'service' | 'prototype';
 
 export type ItemStatus =
+  | 'live'        // public, shipped, you can go and use it
   | 'beta'        // usable, but access is restricted
   | 'development' // being built, not open to anyone yet
   | 'unreleased'  // finished enough to see, not public yet
@@ -42,8 +43,6 @@ export interface ShowcaseItem {
   internalHref?: string;
   /** Show in the header Products dropdown. */
   inNav?: boolean;
-  /** Show in the deeper Products section further down the page. */
-  featured?: boolean;
   highlights?: string[];
 }
 
@@ -65,7 +64,6 @@ export const showcaseItems: ShowcaseItem[] = [
     statusNote: 'Invite-only beta from 3 October 2026 — web app',
     href: 'https://propkeep.org',
     inNav: true,
-    featured: true,
     highlights: [
       'Properties broken down into areas, rooms and components',
       'Inspection reports and maintenance records per component',
@@ -88,13 +86,25 @@ export const showcaseItems: ShowcaseItem[] = [
     // personal identity that is mid-migration to CityLyfe.
     statusNote: 'Web app built; mobile app in early development',
     inNav: true,
-    featured: true,
     highlights: [
       'Swipe or map-and-list browsing of nearby businesses',
       'Mutual-interest matching between people and places',
       'Reviews earn stomps; stomps seed new areas',
       'Web app on React, mobile app on React Native',
     ],
+  },
+  {
+    id: 'vsr-snow',
+    name: 'VSR Snow & Services',
+    kind: 'website',
+    tagline: 'Seasonal snow removal, findable fast.',
+    // Sourced from the live projects API: client Marcus Vargas, status
+    // completed, live_url https://vsrsnow.com. Confirmed serving HTTP 200.
+    summary:
+      'A custom-built site for VSR Snow & Services, supporting seasonal snow removal and year-round work. Built around clarity and mobile usability, so a customer standing outside in the snow can find what they need and get in touch quickly.',
+    status: 'live',
+    statusNote: 'Live at vsrsnow.com',
+    href: 'https://vsrsnow.com',
   },
   {
     id: 'myfriendconsider',
@@ -159,7 +169,6 @@ export const showcaseItems: ShowcaseItem[] = [
     statusNote: 'Prototype — being built and documented in-house',
     internalHref: '/homelab',
     inNav: true,
-    featured: true,
     highlights: [
       'One always-on box for files, backups and services',
       'Separate machine handling DNS so a reboot does not take the house offline',
@@ -177,6 +186,7 @@ export const kindLabels: Record<ItemKind, string> = {
 };
 
 export const statusLabels: Record<ItemStatus, string> = {
+  live: 'Live',
   beta: 'Invite-only beta',
   development: 'In development',
   unreleased: 'Not yet public',
@@ -185,6 +195,7 @@ export const statusLabels: Record<ItemStatus, string> = {
 };
 
 export const statusStyles: Record<ItemStatus, string> = {
+  live: 'bg-emerald-100 text-emerald-800 border-emerald-200',
   beta: 'bg-green-100 text-green-800 border-green-200',
   development: 'bg-blue-100 text-blue-800 border-blue-200',
   unreleased: 'bg-slate-100 text-slate-700 border-slate-200',
@@ -193,11 +204,19 @@ export const statusStyles: Record<ItemStatus, string> = {
 };
 
 export const navItems = showcaseItems.filter((item) => item.inNav);
-export const featuredItems = showcaseItems.filter((item) => item.featured);
 
 /** Where a card or nav entry should point, or null when there is nowhere public to go. */
 export function itemHref(item: ShowcaseItem): string | null {
   return item.internalHref ?? item.href ?? null;
+}
+
+/**
+ * Where the card's primary link goes. Items with their own rich page (homelab)
+ * keep it; everything else gets a generated detail page at /products/<id>, so
+ * the highlight lists have a home now that the Products section is gone.
+ */
+export function detailHref(item: ShowcaseItem): string {
+  return item.internalHref ?? `/products/${item.id}`;
 }
 
 /** External links need target/rel; internal ones must not have them. */
