@@ -117,7 +117,7 @@ export const showcaseItems: ShowcaseItem[] = [
     // Checked 2026-09-26: the apex has no A record, and www returns HTTP 401 —
     // the Cloudflare Pages SITE_PASSWORD gate is still on. It is NOT live, so
     // no link here and no "live" claim. See MFC-cloudflare-fix.md in
-    // Documents/session-consolidation-2026-09-20/ for what unblocks it.
+    // Documents/Claude_Sessions/projects/ for what unblocks it.
     statusNote: 'Built; site is password-gated until launch',
   },
   {
