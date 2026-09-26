@@ -179,23 +179,43 @@ export default function HomelabPage() {
               drives, and the power monitoring.
             </p>
 
-            {/* PLACEHOLDER — swap for a real photo of the enclosure.
-                Drop the image at public/homelab-lego.jpg and replace this whole
-                <div> with:
+            {/* PLACEHOLDER — the tower is not built yet, so there is no photo
+                to take. Matt: "I would need to build the tower before I can get
+                you that picture."
+
+                This is written to read as deliberate rather than missing: the
+                prototype being mid-build is true, and more interesting than an
+                empty frame. It matches the "Prototype" status the carousel card
+                already carries.
+
+                TO SWAP IN THE REAL PHOTO: drop it at public/homelab-lego.jpg
+                and replace this whole <div> with:
                   <img
                     src="/homelab-lego.jpg"
                     alt="The LEGO enclosure holding the main box and the Raspberry Pi"
                     className="w-full rounded-xl border border-gray-200 mb-6"
                   />
-                Landscape works best here. A photo with the side panel off, so
-                the standoffs and the airflow path are visible, does more work
-                than the three paragraphs below it. */}
-            <div className="w-full aspect-[16/10] rounded-xl border-2 border-dashed border-gray-300 bg-gray-100 flex flex-col items-center justify-center text-center px-6 mb-6">
-              <p className="text-gray-500 font-medium">Photo of the build goes here</p>
-              <p className="text-gray-400 text-sm mt-1">
-                public/homelab-lego.jpg
-              </p>
-            </div>
+                Landscape works best. A shot with the side panel off, so the
+                standoffs and the airflow path are visible, does more work than
+                the three paragraphs below it. */}
+            <figure className="mb-6">
+              <div className="w-full aspect-[16/10] rounded-xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-slate-50 flex flex-col items-center justify-center text-center px-8">
+                <span className="text-xs font-semibold uppercase tracking-wide text-amber-800 bg-amber-100 border border-amber-300 rounded-full px-3 py-1 mb-4">
+                  Prototype — mid-build
+                </span>
+                <p className="text-gray-800 font-medium text-lg max-w-sm">
+                  The tower isn&apos;t finished, so there&apos;s nothing honest
+                  to photograph yet.
+                </p>
+                <p className="text-gray-500 text-sm mt-2 max-w-sm">
+                  A picture goes here once it stands up on its own.
+                </p>
+              </div>
+              <figcaption className="text-sm text-gray-500 mt-3">
+                Being built now. What follows is what the build has to get
+                right.
+              </figcaption>
+            </figure>
             <p className="text-lg text-gray-700 leading-relaxed mb-5">
               It started as something to do and turned into a genuinely useful
               constraint. Plastic is a terrible conductor of heat — about a
